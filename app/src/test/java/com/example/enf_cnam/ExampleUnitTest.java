@@ -1,4 +1,4 @@
-package com.example.CNAM;
+package com.example.enf_cnam;
 
 import org.junit.Test;
 
