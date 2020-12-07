@@ -65,24 +65,25 @@ public class MainActivity extends AppCompatActivity {
                         OkHttpClient client = new OkHttpClient();
 
                         RequestBody formBody = new FormBody.Builder()
-                                .add("mail", mailForm.getText().toString())
+                                .add("login", mailForm.getText().toString())
                                 .add("password", passForm.getText().toString())
                                 .build();
 
                         Request request = new Request.Builder()
-                                .url("http://192.168.1.77:8080/Controllers/AuditeurController.php?view=doLogin")
+                                .url("http://192.168.1.77:8080/API/Controllers/AuditeurController.php?view=doLogin")
                                 //.headers("Content-Type", "application/json", "Accept-Language", "fr", "Authorization", )
                                 .method("POST", formBody)
                                 .build();
                         Response response = null;
                         try {
                             response = client.newCall(request).execute();
+                            System.out.println(mailForm.getText().toString());
+                            System.out.println(passForm.getText().toString());
                             System.out.println(response.body().string());
                      /*       JSONObject jsonResponse = new JSONObject(response.body().string());
                             System.out.println("Coucou");
                             System.out.println(jsonResponse);
-                            System.out.println(mailForm.getText().toString());
-                            System.out.println(passForm.getText().toString());
+
                             JSONArray jsonArray = jsonResponse.getJSONArray("auditeurs");
                             for(int i =0; i < jsonArray.length(); i++) {
                                 JSONObject contact = jsonArray.getJSONObject(i);
