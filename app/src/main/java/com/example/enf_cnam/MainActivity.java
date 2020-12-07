@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -63,14 +64,21 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Coucou2");
                         OkHttpClient client = new OkHttpClient();
 
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("mail", mailForm.getText().toString())
+                                .add("password", passForm.getText().toString())
+                                .build();
+
                         Request request = new Request.Builder()
-                                .url("http://192.168.1.77:8080/Controllers/AuditeurController.php?view=all")
+                                .url("http://192.168.1.77:8080/Controllers/AuditeurController.php?view=doLogin")
+                                //.headers("Content-Type", "application/json", "Accept-Language", "fr", "Authorization", )
+                                .method("POST", formBody)
                                 .build();
                         Response response = null;
                         try {
                             response = client.newCall(request).execute();
-                            //System.out.println(response.body().string());
-                            JSONObject jsonResponse = new JSONObject(response.body().string());
+                            System.out.println(response.body().string());
+                     /*       JSONObject jsonResponse = new JSONObject(response.body().string());
                             System.out.println("Coucou");
                             System.out.println(jsonResponse);
                             System.out.println(mailForm.getText().toString());
@@ -86,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
                                     Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                     startActivity(homeActivity);
                                 }
-                            }
-                        } catch (IOException | JSONException e) {
+                            }*/
+                        } catch (IOException /*| JSONException*/ e) {
                             e.printStackTrace();
                         }
 
