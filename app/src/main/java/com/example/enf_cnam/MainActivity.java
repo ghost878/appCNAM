@@ -1,24 +1,48 @@
 package com.example.enf_cnam;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private Connection connection;
+    private Button button;
+    private EditText mailForm;
+    private EditText passForm;
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         //Cette directive enlève la barre de titre
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.requestWindowFeature(Window.)
 // Cette directive permet d'enlever la barre de notifications pour afficher l'application en plein écran
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -26,26 +50,54 @@ public class MainActivity extends AppCompatActivity {
         //this.setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Token token = token.create();
+
+        mailForm = (EditText)findViewById(R.id.editTextTextEmailAddress);
+        passForm = (EditText)findViewById(R.id.editTextTextPassword2);
+        final Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("Coucou1");
+                Thread login = new Thread(new Runnable() {
+                    public void run() {
+                        System.out.println("Coucou2");
+                        OkHttpClient client = new OkHttpClient();
+
+                        Request request = new Request.Builder()
+                                .url("http://192.168.1.77:8080/Controllers/AuditeurController.php?view=all")
+                                .build();
+                        Response response = null;
+                        try {
+                            response = client.newCall(request).execute();
+                            //System.out.println(response.body().string());
+                            JSONObject jsonResponse = new JSONObject(response.body().string());
+                            System.out.println("Coucou");
+                            System.out.println(jsonResponse);
+                            System.out.println(mailForm.getText().toString());
+                            System.out.println(passForm.getText().toString());
+                            JSONArray jsonArray = jsonResponse.getJSONArray("auditeurs");
+                            for(int i =0; i < jsonArray.length(); i++) {
+                                JSONObject contact = jsonArray.getJSONObject(i);
+                                System.out.println(contact.getString("MEL_PRO"));
+                                System.out.println(contact.getString("PASSWORD"));
+
+                                if(contact.getString("MEL_PRO").equals(mailForm.getText().toString()) && contact.getString("PASSWORD").equals(passForm.getText().toString())) {
+                                    System.out.println("YOUPI");
+                                    Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
+                                    startActivity(homeActivity);
+                                }
+                            }
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
-        MySQLConnection db = null;
-        try {
-            db = new MySQLConnection("jdbc:mysql:eu-cdbr-west-03.cleardb.net","b6b3d65e2ecfa2","8e57f74e");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        this.connection = db.getConnection();
-        String query2 = "SELECT *  FROM auditeurs";
-        try {
-            PreparedStatement ps2 = this.connection.prepareStatement(query2);
-            ResultSet results2 = ps2.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
 
-
+                    }
+                });
+                login.start();
+            }
+        });
     }
 }
