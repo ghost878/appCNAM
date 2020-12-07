@@ -5,8 +5,11 @@ require_once("SimpleRest.php");
 
 class AuditeurRestHandler extends SimpleRest {
 
+    /**
+     * Fonction: getAllAuditeurs
+     * Description: Fonction qui récupère toutes la listes des auditeurs enregistré en base et l'encode en format JSON.
+     */
     function getAllAuditeurs() {
-        
         $auditeur = new Auditeur();
         $rawData = $auditeur->getAllAuditeurs();
         if (empty($rawData)) {
@@ -18,16 +21,28 @@ class AuditeurRestHandler extends SimpleRest {
         $requestContentType = 'application/json';
         $this->setHttpHeaders($requestContentType,$statusCode);
         $result["auditeurs"] = $rawData;
-        foreach($result["auditeurs"] as $auditeur) {
-            foreach($auditeur as $col) {
-                $col = utf8_encode($col);
-            }
-        }
         if (strpos($requestContentType,'application/json') !== false) {
             $response = $this->encodeJson($result);
             echo $response;
         }
     }
+
+
+    /**
+     * Fonction: doLogin
+     */
+    function doLogin($username,$password) {
+        $auditeur = new Auditeur();
+        $exists = $auditeur->checkUserExists($username,$password);
+        $requestContentType = 'application/json';
+        $statusCode = 200;
+        $this->setHttpHeaders($requestContentType,$statusCode);
+        if (strpos($requestContentType,'application/json') !== false) {
+            $response = $this->encodeJson($exists);
+            echo $response;
+        }
+    }
+
 
     /**
      * Fonction: encodeJson

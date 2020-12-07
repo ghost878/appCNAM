@@ -6,7 +6,7 @@ class DBController {
     private $host = "eu-cdbr-west-03.cleardb.net";
     private $user = "b6b3d65e2ecfa2";
     private $password = "8e57f74e";
-    private $databse = "heroku_d8cb00c3e8e4e88";
+    private $database = "heroku_d8cb00c3e8e4e88";
 
     /**
      * Constructeur
@@ -26,7 +26,7 @@ class DBController {
      */
     function connectDB() {
         // tentative de création de la connexion avec la base de données
-        $conn = new mysqli($this->host,$this->user,$this->password,$this->databse);
+        $conn = new mysqli($this->host,$this->user,$this->password,$this->database);
         if ($conn->connect_errno) {
             echo "Impossible de se connecter à la base de données : " . $conn->connect_error;
             exit(); 
@@ -34,6 +34,10 @@ class DBController {
         // Encodage en UTF-8
         $conn->set_charset("utf8");
         return $conn;
+    }
+
+    function getMySQLIObject() {
+        return new mysqli($this->host,$this->user,$this->password,$this->database);
     }
 
     /**
