@@ -30,6 +30,7 @@ class AuditeurRestHandler extends SimpleRest {
 
     /**
      * Fonction: doLogin
+     * Description: Retourne true si la combinaison 
      */
     function doLogin($username,$password) {
         $auditeur = new Auditeur();
@@ -49,7 +50,7 @@ class AuditeurRestHandler extends SimpleRest {
      * Description: Fonction d'encodage JSON.
      */
     function encodeJson($responseData) {
-        $jsonResponse = json_encode($responseData,JSON_PRETTY_PRINT );
+        $jsonResponse = json_encode($responseData,JSON_PRETTY_PRINT);
         switch (json_last_error()) {
             case JSON_ERROR_DEPTH:
                 echo ' - Profondeur maximale atteinte' . "\n";

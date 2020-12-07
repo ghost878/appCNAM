@@ -13,10 +13,11 @@ switch($view) {
         $auditeurHandler->getAllAuditeurs();
         break;
     case "doLogin":
+        $auditeurHandler = new AuditeurRestHandler();
         if (isset($_GET['login']) && isset($_GET['password'])) {
-            $auditeurHandler = new AuditeurRestHandler();
             $auditeurHandler->doLogin($_GET['login'],$_GET['password']);
-        } else {
+        }
+        else {
             echo false;
         }
         break;

@@ -8,10 +8,6 @@ require_once("../Controllers/DBController.php");
 class Auditeur {
 
     private $auditeurs = array();
-
-    public function __construct() {
-        $this->checkUserExists("nicolas.strady","test");
-    }
     
     /**
      * Fonction: getAllAuditeurs
@@ -32,9 +28,9 @@ class Auditeur {
         $dbcontroller = new DBController();
         $mysqli = $dbcontroller->getMySQLIObject();
         // création requête préparée
-        $stmt = $mysqli->prepare("SELECT * FROM auditeurs WHERE IDENTIFIANT_ENF=? AND PASSWORD=?");
+        $stmt = $mysqli->prepare("SELECT * FROM auditeurs WHERE IDENTIFIANT_ENF=? OR MEL_PRO=? AND PASSWORD=?");
         // injection des paramètres
-        $stmt->bind_param('ss',$pseudo,$password);
+        $stmt->bind_param('sss',$pseudo,$pseudo,$password);
         // exécution de la requête
         $stmt->execute();
         $auditeurs = $stmt->get_result();
@@ -45,5 +41,3 @@ class Auditeur {
         }
     }
 }
-
-new Auditeur();
