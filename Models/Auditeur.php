@@ -37,7 +37,8 @@ class Auditeur {
         if ($auditeurs->num_rows == 0) {
             return false;
         } else {
-            return true;
+            $this->auditeurs = $auditeurs->fetch_array();
+            return ["exist" => true,"auditeur" => $this->auditeurs];
         }
     }
 }
