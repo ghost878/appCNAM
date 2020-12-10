@@ -28,7 +28,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     // https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    implementation group: 'org.json', name: 'json', version: '20201115'
+    //implementation 'org.json', name: 'json', version: '20201115'
     implementation 'com.google.android.material:material:1.2.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

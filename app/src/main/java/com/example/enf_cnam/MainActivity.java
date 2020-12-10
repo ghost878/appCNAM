@@ -79,7 +79,12 @@ public class MainActivity extends AppCompatActivity {
                             response = client.newCall(request).execute();
                             System.out.println(mailForm.getText().toString());
                             System.out.println(passForm.getText().toString());
-                            System.out.println(response.body().string());
+
+                            String responseBody = response.body().string();
+                            if(responseBody.equals("true")) {
+                                Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
+                                startActivity(homeActivity);
+                            }
                      /*       JSONObject jsonResponse = new JSONObject(response.body().string());
                             System.out.println("Coucou");
                             System.out.println(jsonResponse);
