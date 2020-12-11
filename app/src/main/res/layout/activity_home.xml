@@ -22,7 +22,7 @@
 
         <LinearLayout
             android:id="@+id/navigation"
-            android:layout_width="421dp"
+            android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginTop="-10dp"
             android:background="#c1002a"
@@ -36,6 +36,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
+                android:onClick="viewHome"
                 app:srcCompat="@drawable/home" />
 
             <ImageView
@@ -45,6 +46,7 @@
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
+                android:onClick="mail"
                 app:srcCompat="@drawable/enveloppe" />
 
             <ImageView
@@ -54,6 +56,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
+                android:onClick="viewUserInfo"
                 app:srcCompat="@drawable/user" />
 
             <ImageView
@@ -63,43 +66,75 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
+                android:onClick="logout"
                 app:srcCompat="@drawable/logout" />
 
         </LinearLayout>
 
-        <TableLayout
+        <LinearLayout
+            android:id="@+id/homeLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TableRow
+            <TextView
+                android:id="@+id/hello"
                 android:layout_width="match_parent"
-                android:layout_height="29dp">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="TextView" />
 
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="50dp"
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="158dp"
+                android:layout_height="22dp"
+                app:srcCompat="@drawable/mes_services" />
 
-                    app:srcCompat="@drawable/planning" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="198dp">
 
-                <ImageView
-                    android:id="@+id/imageView10"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="50dp"
-                    app:srcCompat="@drawable/examen" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageView9"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="50dp"
-                    app:srcCompat="@drawable/cursus" />
+                    <ImageView
+                        android:id="@+id/imageView18"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="10dp"
 
-            </TableRow>
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/planning" />
 
-        </TableLayout>
+                    <ImageView
+                        android:id="@+id/imageView15"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/cursus" />
+
+                    <ImageView
+                        android:id="@+id/imageView17"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/examen" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/infoLayout">
+
+        </LinearLayout>
 
     </LinearLayout>
 

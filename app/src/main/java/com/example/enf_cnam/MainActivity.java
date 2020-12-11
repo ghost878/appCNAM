@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mailForm;
     private EditText passForm;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    public static JSONObject auditeurInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +82,16 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(passForm.getText().toString());
 
                             String responseBody = response.body().string();
-                            if(responseBody.equals("true")) {
+                            //System.out.println("Coucou " + responseBody);
+                            JSONObject jsonResponse = new JSONObject(responseBody);
+                            boolean exist = jsonResponse.getBoolean("exist");
+                            if(exist == true) {
+                                auditeurInfo = jsonResponse.getJSONObject("auditeur");
                                 Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(homeActivity);
                             }
+
+
                      /*       JSONObject jsonResponse = new JSONObject(response.body().string());
                             System.out.println("Coucou");
                             System.out.println(jsonResponse);
@@ -101,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(homeActivity);
                                 }
                             }*/
-                        } catch (IOException /*| JSONException*/ e) {
+                        } catch (IOException | JSONException /*| JSONException*/ e) {
                             e.printStackTrace();
                         }
 
