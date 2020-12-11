@@ -86,13 +86,14 @@
 
             <ImageView
                 android:id="@+id/imageView8"
-                android:layout_width="158dp"
+                android:layout_width="140dp"
                 android:layout_height="22dp"
+                android:layout_margin="20dp"
                 app:srcCompat="@drawable/mes_services" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="198dp">
+                android:layout_height="173dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -125,6 +126,23 @@
                         app:srcCompat="@drawable/examen" />
 
                 </LinearLayout>
+            </HorizontalScrollView>
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="206dp"
+                android:layout_height="24dp"
+                android:layout_margin="20dp"
+                app:srcCompat="@drawable/mes_enseignements" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"></LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
 
