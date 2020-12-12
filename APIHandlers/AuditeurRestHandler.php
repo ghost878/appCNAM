@@ -35,11 +35,13 @@ class AuditeurRestHandler extends SimpleRest {
     function doLogin($username,$password) {
         $auditeur = new Auditeur();
         $exists = $auditeur->checkUserExists($username,$password);
+        $enseignements = $auditeur->getEnseignements($exists["auditeur"]['ID_AUDITEUR']);
+        $datas = array_merge($exists,$enseignements);
         $requestContentType = 'application/json';
         $statusCode = 200;
         $this->setHttpHeaders($requestContentType,$statusCode);
         if (strpos($requestContentType,'application/json') !== false) {
-            $response = $this->encodeJson($exists);
+            $response = $this->encodeJson($datas);
             echo $response;
         }
     }
