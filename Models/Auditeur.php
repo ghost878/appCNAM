@@ -51,16 +51,21 @@ class Auditeur {
      * Description: Fonction qui retourne la liste des enseignements et les données de l'auditeur dont l'identifiant est passé en paramètre
      */
     public function getEnseignements($idAuditeur) {
+        $currentYear = (int)(new DateTime())->format('Y');
         $dbcontroller = new DBController();
         $mysqli = $dbcontroller->getMySQLIObject();
-        $stmt = $mysqli->prepare("SELECT u.* FROM unites u, formations f, auditeurs a WHERE u.ID_FORMATION=f.ID_FORMATION AND a.ID_FORMATION=f.ID_FORMATION AND a.ID_AUDITEUR=?");
-        $stmt->bind_param('i',$idAuditeur);
+        $stmt = $mysqli->prepare("SELECT u.* FROM unites u, formations f, auditeurs a WHERE u.ID_FORMATION=f.ID_FORMATION AND a.ID_FORMATION=f.ID_FORMATION AND a.ID_AUDITEUR=? AND (? BETWEEN u.ANNEE_DEBUT AND u.ANNEE_FIN)");
+        $stmt->bind_param('ii',$idAuditeur,$currentYear);
         $stmt->execute();
         $enseignements = $stmt->get_result();
         if ($enseignements->num_rows == 0) {
             return false;
         } else {
-            return ["enseignements" => $enseignements->fetch_array()];
+            $results = array();
+            while($datas = $enseignements->fetch_assoc()) {
+                array_push($results,$datas);
+            }
+            return ["enseignements" => $results];
         }
     }
 }
