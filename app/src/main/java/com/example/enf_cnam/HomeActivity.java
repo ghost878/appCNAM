@@ -55,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         titre.setText("Informations personnelles : ");
         titre.setPadding(200,40,20,30);
         titre.setTextSize(20);
+        titre.setTextColor(Color.BLACK);
         titre.setTypeface(Typeface.DEFAULT_BOLD);
         infoLayout.addView(titre);
         Iterator<String> keys = MainActivity.auditeurInfo.keys();
@@ -62,7 +63,12 @@ public class HomeActivity extends AppCompatActivity {
             String key = keys.next();
             if (key.length() > 2) {
                 TextView data = new TextView(this);
-                data.setText( key + " : " + MainActivity.auditeurInfo.getString(key));
+                if(!(MainActivity.auditeurInfo.getString(key).equals("null"))) {
+                    data.setText(key + " : " + MainActivity.auditeurInfo.getString(key));
+                } else {
+                    data.setText(key + " : " + "Non défini");
+                }
+                data.setTextColor(Color.BLACK);
                 data.setPadding(20,10,20,10);
                 infoLayout.addView(data);
 
