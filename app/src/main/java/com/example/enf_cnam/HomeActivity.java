@@ -7,7 +7,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Layout;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayout navigation;
     private LinearLayout homeLayout;
     private LinearLayout infoLayout;
+    private LinearLayout enseignements;
     private TextView hello;
 
     @Override
@@ -32,9 +35,10 @@ public class HomeActivity extends AppCompatActivity {
         LinearLayout header = (LinearLayout)findViewById(R.id.header);
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
         infoLayout = (LinearLayout) findViewById(R.id.infoLayout);
+        enseignements = (LinearLayout) findViewById(R.id.enseignements);
         hello = (TextView) findViewById(R.id.hello);
         hello.setTextColor(Color.BLACK);
-        System.out.println("JSON" + MainActivity.auditeurInfo);
+        //System.out.println("JSON" + MainActivity.auditeurInfo);
         hello.setPadding(0,30,0,30);
         try {
             hello.setText("Bonjour " + MainActivity.auditeurInfo.getString("PRENOM"));
@@ -43,6 +47,40 @@ public class HomeActivity extends AppCompatActivity {
         }
         hello.setTextSize(30);
         hello.setTypeface(Typeface.DEFAULT_BOLD);
+
+        System.out.println(MainActivity.enseignements);
+        for(int i = 0; i < MainActivity.enseignements.length(); i++) {
+            LinearLayout unite = new LinearLayout(this);
+            unite.setOrientation(LinearLayout.VERTICAL);
+            try {
+                JSONObject uniteDetails = MainActivity.enseignements.getJSONObject(i);
+                TextView libelle = new TextView(this);
+                libelle.setText(uniteDetails.getString("LIBELLE"));
+                libelle.setGravity(Gravity.CENTER);
+                libelle.setTextColor(Color.BLACK);
+                libelle.setTypeface(Typeface.DEFAULT_BOLD);
+                TextView code = new TextView(this);
+                code.setText(uniteDetails.getString("CODE"));
+                code.setGravity(Gravity.CENTER);
+                code.setTextColor(Color.BLACK);
+                code.setTypeface(Typeface.DEFAULT_BOLD);
+                unite.addView(code);
+                unite.addView(libelle);
+                unite.setGravity(Gravity.CENTER);
+                unite.setLayoutParams(new LinearLayout.LayoutParams(300, 400));
+                //unite.setPadding(-30,0,-30,0);
+                unite.setBackgroundResource(R.drawable.unite);
+                ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) unite.getLayoutParams();
+                p.setMargins(20, 0, 20, 0);
+                enseignements.addView(unite);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
 
@@ -92,5 +130,9 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
         startActivity(intent);
+    }
+
+    public void unite(View v) {
+        System.out.println("coucou");
     }
 }

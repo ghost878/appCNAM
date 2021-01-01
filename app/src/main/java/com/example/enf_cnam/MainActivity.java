@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText passForm;
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     public static JSONObject auditeurInfo;
+    public static JSONArray enseignements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +79,13 @@ public class MainActivity extends AppCompatActivity {
                         Response response = null;
                         try {
                             response = client.newCall(request).execute();
-                            System.out.println(mailForm.getText().toString());
-                            System.out.println(passForm.getText().toString());
-
                             String responseBody = response.body().string();
-                            //System.out.println("Coucou " + responseBody);
+                            System.out.println("Response :  " + responseBody);
                             JSONObject jsonResponse = new JSONObject(responseBody);
                             boolean exist = jsonResponse.getBoolean("exist");
                             if(exist == true) {
                                 auditeurInfo = jsonResponse.getJSONObject("auditeur");
+                                enseignements = jsonResponse.getJSONArray("enseignements");
                                 Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(homeActivity);
                             }
