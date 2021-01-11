@@ -14,12 +14,19 @@ switch($view) {
         break;
     case "doLogin":
         $auditeurHandler = new AuditeurRestHandler();
-        if (isset($_GET['login']) && isset($_GET['password'])) {
-            $auditeurHandler->doLogin($_GET['login'],$_GET['password']);
+        if (isset($_POST['login']) && isset($_POST['password'])) {
+            $auditeurHandler->doLogin($_POST['login'],$_POST['password']);
         }
         else {
             echo false;
         }
+        break;
+    case "files_unite" :
+        if (isset($_GET['unite'])) {
+            $unite = $_GET['unite'];
+        }
+        $auditeurHandler = new AuditeurRestHandler();
+        $auditeurHandler->getFilesUnite($unite);
         break;
     case "":
         // 404 - Not Found

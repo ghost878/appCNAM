@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ENF_-_CNAM.iml" filepath="$PROJECT_DIR$/.idea/modules/ENF_-_CNAM.iml" group="ENF_-_CNAM" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="ENF - CNAM/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/API.iml" filepath="$PROJECT_DIR$/.idea/API.iml" />
     </modules>
   </component>
 </project>

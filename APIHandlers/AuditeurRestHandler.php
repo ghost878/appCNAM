@@ -30,7 +30,8 @@ class AuditeurRestHandler extends SimpleRest {
 
     /**
      * Fonction: doLogin
-     * Description: Retourne true si la combinaison 
+     * Description: Retourne true si la combinaison identifiant / mot de passe est correct 
+     * Si true, retourne également les informations de l'auditeur authentifié.
      */
     function doLogin($username,$password) {
         $auditeur = new Auditeur();
@@ -40,6 +41,26 @@ class AuditeurRestHandler extends SimpleRest {
         $requestContentType = 'application/json';
         $statusCode = 200;
         $this->setHttpHeaders($requestContentType,$statusCode);
+        if (strpos($requestContentType,'application/json') !== false) {
+            $response = $this->encodeJson($datas);
+            echo $response;
+        }
+    }
+
+    function getFilesUnite($unite) {
+        $datas = array();
+        $dossiers = scandir("../../Moodle/" . $unite );
+        foreach ($dossiers as $dos) {
+            if($dos != "." &&  $dos != "..") {
+                $fichiers = scandir("../../Moodle/" . $unite . "/" . $dos);
+                unset($fichiers[array_search(".", $fichiers)]);
+                unset($fichiers[array_search("..", $fichiers)]);
+                $datas[$dos] = $fichiers;
+            }
+        }
+        $requestContentType = 'application/json';
+        //$statusCode = 200;
+        //$this->setHttpHeaders($requestContentType,$statusCode);
         if (strpos($requestContentType,'application/json') !== false) {
             $response = $this->encodeJson($datas);
             echo $response;
