@@ -31,6 +31,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private Connection connection;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                                 .build();
 
                         Request request = new Request.Builder()
-                                .url("http://192.168.1.77:8080/API/Controllers/AuditeurController.php?view=doLogin")
+                                .url("https://apicnam.000webhostapp.com/API/Controllers/AuditeurController.php?view=doLogin")
                                 //.headers("Content-Type", "application/json", "Accept-Language", "fr", "Authorization", )
                                 .method("POST", formBody)
                                 .build();
