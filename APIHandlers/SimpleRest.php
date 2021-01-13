@@ -14,6 +14,32 @@ class SimpleRest {
 		header($this->httpVersion. " ". $statusCode ." ". $statusMessage);		
 		header("Content-Type:". $contentType);
 	}
+
+	/**
+     * Fonction: encodeJson
+     * Description: Fonction d'encodage JSON.
+     */
+    function encodeJson($responseData) {
+        $jsonResponse = json_encode($responseData,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+        switch (json_last_error()) {
+            case JSON_ERROR_DEPTH:
+                echo ' - Profondeur maximale atteinte' . "\n";
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                echo ' - Inadéquation des modes ou underflow' . "\n";
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                echo ' - Erreur lors du contrôle des caractères' . "\n";
+            break;
+            case JSON_ERROR_SYNTAX:
+                echo ' - Erreur de syntaxe ; JSON malformé' . "\n";
+            break;
+            case JSON_ERROR_UTF8:
+                echo ' - Caractères UTF-8 malformés, probablement une erreur d\'encodage' . "\n";
+            break;
+        }
+        return $jsonResponse;
+    }
 	
 	public function getHttpStatusMessage($statusCode){
 		$httpStatus = array(

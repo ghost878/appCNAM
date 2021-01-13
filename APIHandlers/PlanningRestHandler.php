@@ -23,7 +23,7 @@ class PlanningRestHandler extends SimpleRest {
         $requestContentType = 'application/json';
         $this->setHttpHeaders($requestContentType,$statusCode);
         if (strpos($requestContentType,'application/json') !== false) {
-            $response = json_encode($events,JSON_PRETTY_PRINT);
+            $response = $this->encodeJson($events);
             echo $response;
         }
     }
