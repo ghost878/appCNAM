@@ -56,6 +56,33 @@ class Planning {
         return $events;
     }
 
+    /**
+     * Fonction: getEventsNextWeek
+     * Description: Retourne les évènements de la semaine prochaine
+     */
+    public function getEventsNextWeek() {
+        $finder = new DOMXPath($this->DOMDocument);
+        $_VIEWSTATE = $finder->query("//input[@name='__VIEWSTATE']")->item(0)->getAttribute('value');
+        var_dump($_VIEWSTATE);
+        $postdata = http_build_query(
+            array(
+                '__VIEWSTATE' => $_VIEWSTATE,
+                'ct100$MainContent$btnNavNext.x' => '------WebKitFormBoundary7MA4YWxkTrZu0gW',
+                'ctl00$MainContent$btnNavNext.y' => '------WebKitFormBoundary7MA4YWxkTrZu0gW--'
+            )
+        );
+        $options = array('https' =>
+            array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $postdata
+            ) 
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents(self::url,false,$context);
+        var_dump($result);
+    }
+
     
     /**
      * Fonction: isDayOfWeek

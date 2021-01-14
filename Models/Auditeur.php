@@ -30,6 +30,7 @@ class Auditeur {
     public function checkUserExists($pseudo,$password) {
         $dbcontroller = new DBController();
         $mysqli = $dbcontroller->getMySQLIObject();
+        $mysqli->set_charset("utf8");
         // création requête préparée
         $stmt = $mysqli->prepare("SELECT * FROM auditeurs WHERE IDENTIFIANT_ENF=? OR MEL_PRO=? AND PASSWORD=?");
         // injection des paramètres
@@ -41,7 +42,7 @@ class Auditeur {
             return false;
         } else {
             $this->auditeurs = $auditeurs->fetch_array();
-            return ["exist" => true,"auditeur" => $this->auditeurs];
+            return ["exist"=>"true","auditeur" => $this->auditeurs];
         }
     }
 

@@ -15,13 +15,14 @@ class SimpleRest {
 		header("Content-Type:". $contentType);
 	}
 
+
 	/**
      * Fonction: encodeJson
      * Description: Fonction d'encodage JSON.
      */
     function encodeJson($responseData) {
         $jsonResponse = json_encode($responseData,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
-        switch (json_last_error()) {
+		switch (json_last_error()) {
             case JSON_ERROR_DEPTH:
                 echo ' - Profondeur maximale atteinte' . "\n";
             break;

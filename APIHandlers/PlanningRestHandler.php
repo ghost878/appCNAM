@@ -27,4 +27,13 @@ class PlanningRestHandler extends SimpleRest {
             echo $response;
         }
     }
+
+    /**
+     * Fonction: getNextWeek
+     * Description: Retourne la semaine suivante de la semaine courante
+     */
+    public function getNextWeek() {
+        $planning = new Planning();
+        $planning->getEventsNextWeek();
+    }
 }
