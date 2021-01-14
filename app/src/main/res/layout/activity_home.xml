@@ -81,45 +81,15 @@
                 android:orientation="vertical" >
 
                 <LinearLayout
-                    android:id="@+id/moodleLayout"
+                    android:id="@+id/planningLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="570dp"
-                    android:layout_margin="40dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/moodleInfo1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="TextView" />
-
-                    <TextView
-                        android:id="@+id/moodleInfo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:text="TextView" />
-
-                    <TextView
-                        android:id="@+id/moodleInfo3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:text="TextView" />
-
-                    <LinearLayout
-                        android:id="@+id/cadreFichiers"
-                        android:layout_width="match_parent"
-                        android:layout_height="382dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/fichiers"
-                        android:orientation="vertical"/>
-                </LinearLayout>
+                    android:layout_height="569dp"
+                    android:orientation="vertical"></LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/homeLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="569dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -152,6 +122,7 @@
                                 android:layout_margin="10dp"
 
                                 android:layout_weight="1"
+                                android:onClick="viewPlanning"
                                 app:srcCompat="@drawable/planning" />
 
                             <ImageView
@@ -160,6 +131,7 @@
                                 android:layout_height="150dp"
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
+                                android:onClick="viewCursus"
                                 app:srcCompat="@drawable/cursus" />
 
                             <ImageView
@@ -168,6 +140,7 @@
                                 android:layout_height="150dp"
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
+                                android:onClick="viewExamen"
                                 app:srcCompat="@drawable/examen" />
 
                         </LinearLayout>
@@ -188,7 +161,7 @@
                             android:id="@+id/enseignements"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal"/>
+                            android:orientation="horizontal" />
                     </HorizontalScrollView>
                 </LinearLayout>
 
@@ -199,6 +172,54 @@
                     android:orientation="vertical" >
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/moodleLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="570dp"
+                    android:layout_margin="40dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/moodleInfo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/moodleInfo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:text="TextView" />
+
+                    <TextView
+                        android:id="@+id/moodleInfo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:text="TextView" />
+
+                    <LinearLayout
+                        android:id="@+id/cadreFichiers"
+                        android:layout_width="match_parent"
+                        android:layout_height="382dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/fichiers"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cursusLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"></LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/examenLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"></LinearLayout>
 
             </LinearLayout>
         </ScrollView>

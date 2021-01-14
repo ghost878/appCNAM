@@ -313,18 +313,28 @@ public class HomeActivity extends AppCompatActivity {
         homeLayout.setVisibility(View.VISIBLE);
     }
 
+    public void viewPlanning(View v) {
+
+    }
+
+    public void viewCursus(View v) {
+
+    }
+
+    public void viewExamen(View v) {
+
+    }
+
+
     public void logout(View v) {
         Intent mainActivity = new Intent(HomeActivity.this, MainActivity.class);
         startActivity(mainActivity);
     }
 
     public void mail(View v) {
-        Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Min SDK 15
-        startActivity(intent);
+        Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
+        viewIntent.setPackage("com.android.chrome");
+        startActivity(viewIntent);
     }
 
-    public void unite(View v) {
-        System.out.println("coucou");
-    }
 }
