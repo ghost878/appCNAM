@@ -49,6 +49,9 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayout infoLayout;
     private LinearLayout enseignements;
     private LinearLayout moodleLayout;
+    private LinearLayout planingLayout;
+    private LinearLayout cursusLayout;
+    private LinearLayout examenLayout;
     private TextView hello;
     private LinearLayout cadreFichiers;
 
@@ -60,10 +63,16 @@ public class HomeActivity extends AppCompatActivity {
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
         infoLayout = (LinearLayout) findViewById(R.id.infoLayout);
         moodleLayout = (LinearLayout) findViewById(R.id.moodleLayout);
+        planingLayout = (LinearLayout) findViewById(R.id.planningLayout);
+        cursusLayout = (LinearLayout) findViewById(R.id.cursusLayout);
+        examenLayout = (LinearLayout) findViewById(R.id.examenLayout);
         enseignements = (LinearLayout) findViewById(R.id.enseignements);
         cadreFichiers = (LinearLayout) findViewById(R.id.cadreFichiers);
         infoLayout.setVisibility(View.GONE);
         moodleLayout.setVisibility(View.GONE);
+        planingLayout.setVisibility(View.GONE);
+        examenLayout.setVisibility(View.GONE);
+        cursusLayout.setVisibility(View.GONE);
         hello = (TextView) findViewById(R.id.hello);
         hello.setTextColor(Color.BLACK);
         //System.out.println("JSON" + MainActivity.auditeurInfo);
@@ -314,7 +323,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void viewPlanning(View v) {
-
+        homeLayout.setVisibility(View.GONE);
+        planingLayout.setVisibility(View.VISIBLE);
     }
 
     public void viewCursus(View v) {
