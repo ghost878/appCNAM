@@ -41,9 +41,9 @@ class PlanningRestHandler extends SimpleRest {
      * Fonction: getPlanningByDate
      * Description: Retourne le planning de la date indiqué au format dd/mm/Y
      */
-    public function getPlanningByDate($date) {
+    public function getPlanningByDate($date,$id) {
         $planning = new Planning();
-        $events = $planning->getByDate($date);
+        $events = $planning->getByDate($date,$id);
         if (empty($events)) {
             $statusCode = 404;
             $events = array("error" => "Le planning n'a pas pu être chargé");

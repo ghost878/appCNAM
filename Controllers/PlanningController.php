@@ -16,10 +16,10 @@ switch($view) {
         }
         break;
     case "getByDate":
-        if (isset($_GET['date'])) {
-            $planningHandler->getPlanningByDate($_GET['date']); 
+        if (isset($_GET['date']) && isset($_GET['id'])) {
+            $planningHandler->getPlanningByDate($_GET['date'],$_GET['id']); 
         } else {
-            echo "Vous devez rentrer une date";
+            echo "Paramètre(s) manquant(s)";
         }
         break;
     // route de test

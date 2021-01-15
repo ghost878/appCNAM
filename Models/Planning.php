@@ -90,11 +90,11 @@ class Planning {
      * Fonction: getByDate
      * Description: Retourne la liste des évènements de la date indiqué
      */
-    public function getByDate($date) {
+    public function getByDate($date,$id) {
         $dbcontroller = new DBController();
         $mysqli = $dbcontroller->getMySQLIObject();
-        $stmt = $mysqli->prepare("SELECT * from evenements e, unites u, enseignants ens WHERE DATE_FORMAT(e.DATE_EVENEMENT,'%d/%m/%Y') = ? AND e.ID_UNITE = u.ID_UNITE AND e.ID_ENSEIGNANT = ens.ID_ENSEIGNANT");
-        $stmt->bind_param('s',$date);
+        $stmt = $mysqli->prepare("SELECT * from evenements e, unites u, enseignants ens WHERE DATE_FORMAT(e.DATE_EVENEMENT,'%d/%m/%Y') = ? AND e.ID_UNITE = u.ID_UNITE AND e.ID_ENSEIGNANT = ens.ID_ENSEIGNANT AND e.ID_FORMATION=?");
+        $stmt->bind_param('si',$date,$id);
         $stmt->execute();
         $events = $stmt->get_result();
         if ($events->num_rows == 0) {
