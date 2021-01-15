@@ -69,4 +69,20 @@ class Auditeur {
             return ["enseignements" => $results];
         }
     }
+
+    public function getFormation($idAuditeur) {
+        $dbcontroller = new DBController();
+        $mysqli = $dbcontroller->getMySQLIObject();
+        $stmt = $mysqli->prepare("SELECT f.* FROM formations f, auditeurs a WHERE  a.ID_FORMATION=f.ID_FORMATION AND a.ID_AUDITEUR=?");
+        $stmt->bind_param('i',$idAuditeur);
+        $stmt->execute();
+        $formation = $stmt->get_result();
+        if ($formation->num_rows == 0) {
+            return false;
+        } else {
+            $result = $formation->fetch_array();
+            return ["formation" => $result];
+        }
+    }
+
 }

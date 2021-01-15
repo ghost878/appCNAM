@@ -11,9 +11,9 @@ class PlanningRestHandler extends SimpleRest {
      * Fonction getPlanning
      * Description: Retourne le planning 
      */
-    public function getPlanning() {
+    public function getPlanning($id) {
         $planning = new Planning();
-        $events = $planning->getEventsCurrentWeek();
+        $events = $planning->getEventsCurrentWeek($id);
         if (empty($events)) {
             $statusCode = 404;
             $events = array('error' => "Le planning n'a pas pu être chargé");
@@ -35,5 +35,27 @@ class PlanningRestHandler extends SimpleRest {
     public function getNextWeek() {
         $planning = new Planning();
         $planning->getEventsNextWeek();
+    }
+
+    /**
+     * Fonction: getPlanningByDate
+     * Description: Retourne le planning de la date indiqué au format dd/mm/Y
+     */
+    public function getPlanningByDate($date) {
+        $planning = new Planning();
+        $events = $planning->getByDate($date);
+        if (empty($events)) {
+            $statusCode = 404;
+            $events = array("error" => "Le planning n'a pas pu être chargé");
+        }
+        else {
+            $statusCode = 200;
+        }
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType,$statusCode);
+        if (strpos($requestContentType,'application/json') !== false) {
+            $response = $this->encodeJson($events);
+            echo $response;
+        }
     }
 }

@@ -42,6 +42,9 @@ class SimpleRest {
         return $jsonResponse;
     }
 	
+	/**
+	 * Fonction: getHttpStatusMessage
+	 */
 	public function getHttpStatusMessage($statusCode){
 		$httpStatus = array(
 			100 => 'Continue',  

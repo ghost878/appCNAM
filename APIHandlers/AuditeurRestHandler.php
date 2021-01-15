@@ -37,7 +37,8 @@ class AuditeurRestHandler extends SimpleRest {
         $auditeur = new Auditeur();
         $exists = $auditeur->checkUserExists($username,$password);
         $enseignements = $auditeur->getEnseignements($exists["auditeur"]['ID_AUDITEUR']);
-        $datas = array_merge($exists,$enseignements);
+        $formation = $auditeur->getFormation($exists["auditeur"]['ID_AUDITEUR']);
+        $datas = array_merge($exists,$enseignements,$formation);
         $requestContentType = 'application/json';
         $statusCode = 200;
         $this->setHttpHeaders($requestContentType,$statusCode);

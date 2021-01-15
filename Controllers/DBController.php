@@ -37,7 +37,9 @@ class DBController {
     }
 
     function getMySQLIObject() {
-        return new mysqli($this->host,$this->user,$this->password,$this->database);
+        $mysqli = new mysqli($this->host,$this->user,$this->password,$this->database);
+        $mysqli->set_charset('utf8');
+        return $mysqli;
     }
 
     /**

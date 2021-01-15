@@ -7,14 +7,13 @@ require_once("../Controllers/DBController.php");
  */
 class Planning {
 
-    private const url = "http://qrc.gescicca.net/Planning.aspx?id=mmw7MgOktQ%2bcNzdLFCBR0g%3d%3d&annsco=2020&typepersonne=AUDITEUR";
+
     private $DOMDocument;
 
     public function __construct()
     {
         $this->DOMDocument = new DOMDocument();
         $this->DOMDocument->validateOnParse = true;
-        $this->DOMDocument->loadHTMLFile(self::url);
     }
     
     /**
@@ -22,6 +21,7 @@ class Planning {
      * Description: Retourne les jours de la semaine actuel sous forme de tableau de chaîne de caractère.
      */
     public function getDaysCurrentWeek() {
+
         $finder = new DOMXPath($this->DOMDocument);
         $days = $finder->query("//*[contains(@class,'PlanningDay')]");
         $daysString = array();
@@ -35,7 +35,9 @@ class Planning {
      * Fonction: getEventsCurrentWeek
      * Description: Retourne les évènements de la semaine actuel
      */
-    public function getEventsCurrentWeek() {
+    public function getEventsCurrentWeek($id) {
+        //mmw7MgOktQ%2bcNzdLFCBR0g%3d%3d
+        $this->DOMDocument->loadHTMLFile("http://qrc.gescicca.net/Planning.aspx?id=". urlencode($id) ."&annsco=2020&typepersonne=AUDITEUR");
         $finder = new DOMXPath($this->DOMDocument);
         $horaires = $finder->query("//*[contains(@class,'PlanningEvt')]//*[contains(@class,'lblEvtRange')]");
         $unites = $finder->query("//*[contains(@class,'PlanningEvt')]//*[contains(@class,'lblEvtUE')]");
@@ -50,7 +52,7 @@ class Planning {
                 $currentDayOfWeek = $dayOfWeek;
             }
             $libelleUE = $this->decodeCodeUe($codeUE);
-            array_push($events, array("horaire" => $horaire->nodeValue, "unite" => $codeUE . " " . $libelleUE, "dayOfWeek" => $currentDayOfWeek));
+            array_push($events, array("horaire" => $horaire->nodeValue, "unite" => $codeUE . " " . $libelleUE, "dayOfWeek" => strtoupper($currentDayOfWeek)));
             $compteur++;
         }
         return $events;
@@ -81,6 +83,29 @@ class Planning {
         $context = stream_context_create($options);
         $result = file_get_contents(self::url,false,$context);
         var_dump($result);
+    }
+
+
+    /**
+     * Fonction: getByDate
+     * Description: Retourne la liste des évènements de la date indiqué
+     */
+    public function getByDate($date) {
+        $dbcontroller = new DBController();
+        $mysqli = $dbcontroller->getMySQLIObject();
+        $stmt = $mysqli->prepare("SELECT * from evenements e, unites u, enseignants ens WHERE DATE_FORMAT(e.DATE_EVENEMENT,'%d/%m/%Y') = ? AND e.ID_UNITE = u.ID_UNITE AND e.ID_ENSEIGNANT = ens.ID_ENSEIGNANT");
+        $stmt->bind_param('s',$date);
+        $stmt->execute();
+        $events = $stmt->get_result();
+        if ($events->num_rows == 0) {
+            return false;
+        } else {
+            $results = array();
+            while($datas = $events->fetch_assoc()) {
+                array_push($results,$datas);
+            }
+            return ['events' => $results];
+        }
     }
 
     

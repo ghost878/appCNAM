@@ -11,7 +11,16 @@ $planningHandler = new PlanningRestHandler();
 
 switch($view) {
     case "planning":
-        $planningHandler->getPlanning();
+        if (isset($_GET['id'])) {
+            $planningHandler->getPlanning($_GET['id']);
+        }
+        break;
+    case "getByDate":
+        if (isset($_GET['date'])) {
+            $planningHandler->getPlanningByDate($_GET['date']); 
+        } else {
+            echo "Vous devez rentrer une date";
+        }
         break;
     // route de test
     case "test": 
