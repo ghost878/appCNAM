@@ -70,6 +70,11 @@ class Auditeur {
         }
     }
 
+    /**
+     * @param idAuditeur
+     * Fonction: getFormations
+     * Description: Fonction qui retourne la formations de l'auditeur dont l'identifiant est passé en paramètre
+     */
     public function getFormation($idAuditeur) {
         $dbcontroller = new DBController();
         $mysqli = $dbcontroller->getMySQLIObject();

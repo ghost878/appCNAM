@@ -8,7 +8,7 @@ class PlanningRestHandler extends SimpleRest {
 
 
     /**
-     * Fonction getPlanning
+     * Fonction: getPlanning
      * Description: Retourne le planning 
      */
     public function getPlanning($id) {
@@ -46,7 +46,7 @@ class PlanningRestHandler extends SimpleRest {
         $events = $planning->getByDate($date,$id);
         if (empty($events)) {
             $statusCode = 404;
-            $events = array("error" => "Le planning n'a pas pu être chargé");
+            $events = array("error" => "Le planning n'a pas pu être chargé ou il n'y a pas de données pour la date ou la formation demandé.");
         }
         else {
             $statusCode = 200;
