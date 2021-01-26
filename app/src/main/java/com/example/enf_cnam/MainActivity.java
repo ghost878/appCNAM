@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     public static JSONObject auditeurInfo;
     public static JSONArray enseignements;
+    public static JSONObject formation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             if(exist == true) {
                                 auditeurInfo = jsonResponse.getJSONObject("auditeur");
                                 enseignements = jsonResponse.getJSONArray("enseignements");
+                                formation = jsonResponse.getJSONObject("formation");
                                 Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(homeActivity);
                             }
