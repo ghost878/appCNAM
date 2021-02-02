@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlanningActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/headerFragment"
+            android:name="com.example.enf_cnam.HeaderFragment"
+            android:layout_width="match_parent"
+            android:layout_height="160dp" />
+
+        <LinearLayout
+            android:id="@+id/planningLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="173dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="PLANNING"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/changeViewPlanning"
+                    android:layout_width="139dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:onClick="changeView"
+                    android:text="Cette semaine"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/planningJour"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/rectangle_date"
+                            android:orientation="horizontal">
+
+
+                            <ImageView
+                                android:id="@+id/imageButton"
+                                android:layout_width="3dp"
+                                android:layout_height="51dp"
+                                android:layout_weight="1"
+                                android:onClick="prevDayPlanning"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/prev" />
+
+                            <TextView
+                                android:id="@+id/libelleDay"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text=""
+                                android:textSize="20sp" />
+
+                            <ImageView
+                                android:id="@+id/imageButton2"
+                                android:layout_width="2dp"
+                                android:layout_height="51dp"
+                                android:layout_weight="1"
+                                android:onClick="nextDayPlanning"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/next" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/cadrePlanning"
+                            android:layout_width="392dp"
+                            android:layout_height="337dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/cadre_planning"
+                            android:divider="@drawable/divider"
+                            android:dividerPadding="100dp"
+                            android:orientation="vertical"
+                            android:showDividers="middle" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/planningSemaine"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,22 +62,15 @@ public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout navigation;
     private LinearLayout homeLayout;
-    private LinearLayout infoLayout;
+
     private LinearLayout enseignements;
     private LinearLayout moodleLayout;
-    private LinearLayout planingLayout;
-    private LinearLayout planningJour;
-    private LinearLayout planningSemaine;
-    private LinearLayout cadreCours;
+
     private LinearLayout cursusLayout;
     private LinearLayout examenLayout;
     private TextView hello;
     private LinearLayout cadreFichiers;
-    private Button changeViewPlanning;
-    private TextView libelleDay;
-    private MapView mapView;
-    public static boolean semaineActive = false;
-    public static LocalDate date = LocalDate.now();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,34 +83,22 @@ public class HomeActivity extends AppCompatActivity {
 //        mapFragment.getMapAsync(this);
 
 
-        LinearLayout header = (LinearLayout)findViewById(R.id.header);
+        //LinearLayout header = (LinearLayout)findViewById(R.id.header);
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
-        infoLayout = (LinearLayout) findViewById(R.id.infoLayout);
         moodleLayout = (LinearLayout) findViewById(R.id.moodleLayout);
-        planingLayout = (LinearLayout) findViewById(R.id.planningLayout);
+
         cursusLayout = (LinearLayout) findViewById(R.id.cursusLayout);
         examenLayout = (LinearLayout) findViewById(R.id.examenLayout);
         enseignements = (LinearLayout) findViewById(R.id.enseignements);
-        planningJour = (LinearLayout) findViewById(R.id.planningJour);
-        planningSemaine = (LinearLayout) findViewById(R.id.planningSemaine);
-        cadreCours = (LinearLayout) findViewById(R.id.cadrePlanning);
+
         cadreFichiers = (LinearLayout) findViewById(R.id.cadreFichiers);
-        changeViewPlanning = (Button) findViewById(R.id.changeViewPlanning);
-        libelleDay = (TextView) findViewById(R.id.libelleDay);
-        mapView = (MapView) findViewById(R.id.mapView);
 
+//        infoLayout.setVisibility(View.GONE);
+//        moodleLayout.setVisibility(View.GONE);
+//        planingLayout.setVisibility(View.GONE);
+//        examenLayout.setVisibility(View.GONE);
+//        cursusLayout.setVisibility(View.GONE);
 
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        //mapView.getMapAsync((OnMapReadyCallback) this);
-
-
-
-        infoLayout.setVisibility(View.GONE);
-        moodleLayout.setVisibility(View.GONE);
-        planingLayout.setVisibility(View.GONE);
-        examenLayout.setVisibility(View.GONE);
-        cursusLayout.setVisibility(View.GONE);
         hello = (TextView) findViewById(R.id.hello);
         hello.setTextColor(Color.BLACK);
         //System.out.println("JSON" + MainActivity.auditeurInfo);
@@ -330,277 +311,29 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void viewUserInfo(View v) throws JSONException {
-        System.out.println("INFO");
-        homeLayout.setVisibility(View.GONE);
-
-        infoLayout.setVisibility(View.VISIBLE);
-        infoLayout.removeAllViews();
-        TextView titre = new TextView(this);
-        titre.setText("Informations personnelles : ");
-        titre.setPadding(200,40,20,30);
-        titre.setTextSize(20);
-        titre.setTextColor(Color.BLACK);
-        titre.setTypeface(Typeface.DEFAULT_BOLD);
-        infoLayout.addView(titre);
-        Iterator<String> keys = MainActivity.auditeurInfo.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            if (key.length() > 2) {
-                TextView data = new TextView(this);
-                if(!(MainActivity.auditeurInfo.getString(key).equals("null"))) {
-                    data.setText(key + " : " + MainActivity.auditeurInfo.getString(key));
-                } else {
-                    data.setText(key + " : " + "Non défini");
-                }
-                data.setTextColor(Color.BLACK);
-                data.setPadding(20,10,20,10);
-                infoLayout.addView(data);
-
-            }
-        }
-
-
 
     }
-    public void viewHome(View v) {
-        infoLayout.setVisibility(View.GONE);
-        moodleLayout.setVisibility(View.GONE);
-        homeLayout.setVisibility(View.VISIBLE);
-        planingLayout.setVisibility(View.GONE);
-    }
+
 
     public void viewPlanning(View v) throws JSONException {
-        homeLayout.setVisibility(View.GONE);
-        planingLayout.setVisibility(View.VISIBLE);
-        planningJour.setVisibility(View.VISIBLE);
-        planningSemaine.setVisibility(View.GONE);
+//        homeLayout.setVisibility(View.GONE);
+//        planingLayout.setVisibility(View.VISIBLE);
+//        planningJour.setVisibility(View.VISIBLE);
+//        planningSemaine.setVisibility(View.GONE);
         //PLANNING JOUR
-        Thread jour = new Thread(new Runnable() {
-            public void run() {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                try {
-                    listPlanningDay(date);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        jour.start();
-
-        //PLANNING SEMAINE
-//        Thread semaine = new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    OkHttpClient client = new OkHttpClient();
-//                    Request request = new Request.Builder()
-//                            .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=planning&id=" + MainActivity.formation.getString("ID_CNAM"))
-//                            .build();
-//                    Response response = client.newCall(request).execute();
-//                    String responseBody = response.body().string();
-//                    System.out.println("Response :  " + responseBody);
-//                    JSONArray coursSemaine = new JSONArray(responseBody);
-//                    ArrayList<String> joursSemaine = new ArrayList<>();
-//
-//                    for(int i = 0; i < coursSemaine.length();i++) {
-//                        JSONObject detailCours = coursSemaine.getJSONObject(i);
-//                        if(!joursSemaine.contains(detailCours.getString("dayOfWeek"))){
-//                            final TextView jour = new TextView(getApplicationContext());
-//                            jour.setText(detailCours.getString("dayOfWeek"));
-//                            jour.setGravity(Gravity.CENTER);
-//                            jour.setPadding(0,20,0, 20);
-//                            jour.setTextColor(Color.rgb(196,4,44));
-//                            jour.setTypeface(Typeface.DEFAULT_BOLD);
-//                            jour.setTextSize(16);
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    planningSemaine.addView(jour);
-//                                }
-//                            });
-//                            joursSemaine.add(detailCours.getString("dayOfWeek"));
-//                        }
-//                        final TextView horaire = new TextView(getApplicationContext());
-//                        final TextView unite = new TextView(getApplicationContext());
-//                        horaire.setText(detailCours.getString("horaire"));
-//                        unite.setText(detailCours.getString("unite"));
-//                        unite.setPadding(5,5, 5, 10);
-//                        horaire.setPadding(5,5, 5, 5);
-//                        unite.setTextColor(Color.BLACK);
-//                        horaire.setTextColor(Color.BLACK);
-//                        unite.setTypeface(Typeface.DEFAULT_BOLD);
-//                        horaire.setTypeface(Typeface.DEFAULT_BOLD);
-//
-//
-//
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                planningSemaine.addView(horaire);
-//                                planningSemaine.addView(unite);
-//                            }
-//                        });
-//                    }
-//                } catch (IOException | JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }});
-//        semaine.start();
+        Intent planningActivity = new Intent(HomeActivity.this, PlanningActivity.class);
+        startActivity(planningActivity);
     }
 
-    public  JSONArray getPlanningJour(final String date) {
-                JSONArray results = null;
-                try {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getByDate&date=" + date + "&id=" + MainActivity.formation.getString("ID_FORMATION"))
-                            .build();
-                    Response response = client.newCall(request).execute();
-                    String responseBody = response.body().string();
-                    //System.out.println("Response :  " + responseBody);
-                    JSONObject jsonResponse = new JSONObject(responseBody);
-                    if(jsonResponse.has("events")) {
-                        results = jsonResponse.getJSONArray("events");
-                    }
-
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-        return results;
-    }
-
-    public void listPlanningDay(final LocalDate date) throws JSONException {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                cadreCours.removeAllViews();
-            }
-        });
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        JSONArray cours = getPlanningJour(dtf.format(date));
-        //final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("EE, dd MMMM yyyy");
-        ZoneId defaultZoneId = ZoneId.systemDefault();
-        Date date1 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
-        final String timeStamp = new SimpleDateFormat("EEEE d MMMM", Locale.FRANCE).format(date1);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                libelleDay.setText(timeStamp);
-                libelleDay.setGravity(Gravity.CENTER);
-                libelleDay.setTextColor(Color.BLACK);
-            }
-        });
-        if(cours != null) {
-            for (int i = 0; i < cours.length(); i++) {
-                JSONObject detailCours = cours.getJSONObject(i);
-                final LinearLayout unCours = new LinearLayout(getApplicationContext());
-                unCours.setOrientation(LinearLayout.VERTICAL);
-                TextView horaires = new TextView(getApplicationContext());
-                horaires.setText(detailCours.getString("HEURE_DEB") + " à " + detailCours.getString("HEURE_FIN"));
-                TextView libelle = new TextView(getApplicationContext());
-                libelle.setText(detailCours.getString("CODE") + " : " + detailCours.getString("LIBELLE"));
-                TextView profEtSalle = new TextView(getApplicationContext());
-                profEtSalle.setText(detailCours.getString("PRENOM") + " " + detailCours.getString("NOM") + "  -  " + detailCours.getString("LIB_SALLE"));
-                horaires.setPadding(5, 10, 5, 10);
-                libelle.setPadding(5, 5, 5, 10);
-                libelle.setPadding(5, 5, 5, 10);
-                horaires.setTextColor(Color.rgb(196,4,44));
-                libelle.setTextColor(Color.BLACK);
-                profEtSalle.setTextColor(Color.DKGRAY);
-                horaires.setTypeface(Typeface.DEFAULT_BOLD);
-                libelle.setTypeface(Typeface.DEFAULT_BOLD);
-                profEtSalle.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC), Typeface.ITALIC);
-                horaires.setGravity(Gravity.CENTER);
-                libelle.setGravity(Gravity.CENTER);
-                profEtSalle.setGravity(Gravity.CENTER);
-                unCours.addView(horaires);
-                unCours.addView(libelle);
-                unCours.addView(profEtSalle);
-                unCours.setPadding(10,20,10,20);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        cadreCours.addView(unCours);
-                    }
-                });
-
-            }
-        }
-    }
-
-    public void nextDayPlanning(View v) {
-        date = LocalDate.parse(date.toString()).plusDays(1);
-        Thread nextDay = new Thread(new Runnable() {
-            public void run() {
-                //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                try {
-                   // System.out.println(dtf.format(date));
-                    listPlanningDay(date);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        nextDay.start();
-    }
-
-    public void prevDayPlanning(View v) {
-        date = LocalDate.parse(date.toString()).minusDays(1);
-        Thread prevDay = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    listPlanningDay(date);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        prevDay.start();
-    }
-
-
-    public void changeView(View v) {
-//        System.out.println("Visible : " + View.VISIBLE);
-//        System.out.println("Gone : " + View.GONE);
-//        System.out.println(planningJour.getVisibility() + "--" + planningSemaine.getVisibility());
-//        planingLayout.removeView(planningJour);
-//        planingLayout.removeView(planningSemaine);
-
-        if(semaineActive == false) {
-            semaineActive = true;
-            planningSemaine.setVisibility(View.VISIBLE);
-            planningJour.setVisibility(View.GONE);
-            changeViewPlanning.setText("Aujourdhui");
-        } else {
-            semaineActive = false;
-            planningJour.setVisibility(View.VISIBLE);
-            planningSemaine.setVisibility(View.GONE);
-            changeViewPlanning.setText("Cette semaine");
-        }
-
-//        if(planningJour.getVisibility() != View.GONE) {
-//            System.out.println("Coucou1");
-///*            planningSemaine.setVisibility(View.VISIBLE);
-//            planningJour.setVisibility(View.GONE);
-//            System.out.println(planningJour.getVisibility());
-//            changeViewPlanning.setText("Aujourdhui");*/
-//            planingLayout.addView(planningSemaine);
-//        }
-//        if(planningSemaine.getVisibility() != View.GONE) {
-///*            planningJour.setVisibility(View.VISIBLE);
-//            planningSemaine.setVisibility(View.GONE);
-//            changeViewPlanning.setText("Cette semaine");*/
-//            planingLayout.addView(planningJour);
-//        }
-    }
 
     public void viewCursus(View v) {
-        homeLayout.setVisibility(View.GONE);
-        cursusLayout.setVisibility(View.VISIBLE);
+        Intent cursusActivity = new Intent(HomeActivity.this, CursusActivity.class);
+        startActivity(cursusActivity);
     }
 
     public void viewExamen(View v) {
-        homeLayout.setVisibility(View.GONE);
-        examenLayout.setVisibility(View.VISIBLE);
+        Intent examenActivity = new Intent(HomeActivity.this, ExamenActivity.class);
+        startActivity(examenActivity);
     }
 
 
@@ -613,6 +346,11 @@ public class HomeActivity extends AppCompatActivity {
         Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
+    }
+
+    public void viewMap(View v) {
+        Intent mainActivity = new Intent(HomeActivity.this, MapActivity.class);
+        startActivity(mainActivity);
     }
 
 }
