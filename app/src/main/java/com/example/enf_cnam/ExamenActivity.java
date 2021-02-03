@@ -1,9 +1,13 @@
 package com.example.enf_cnam;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,6 +18,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,26 +31,50 @@ import okhttp3.Response;
 
 public class ExamenActivity extends AppCompatActivity {
 
+    private LinearLayout itemExamen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_examen);
+        this.itemExamen = (LinearLayout) findViewById(R.id.itemExamen);
         Thread exams = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 try {
                     JSONArray examens = listExamens(MainActivity.formation.getInt("ID_FORMATION"));
-                    LinearLayout unExamen = new LinearLayout(getApplicationContext());
-                    unExamen.setOrientation(LinearLayout.VERTICAL);
                     if (examens != null) {
                         for(int i = 0; i < examens.length(); i++) {
+                            final LinearLayout unExamen = new LinearLayout(getApplicationContext());
+                            unExamen.setOrientation(LinearLayout.VERTICAL);
                             JSONObject examen = examens.getJSONObject(i);
-                            TextView horaires = new TextView(getApplicationContext());
-                            horaires.setText(examen.getString("HEURE_DEB") + " à " + examen.getString("HEURE_FIN"));
-                            unExamen.addView(horaires);
+                            TextView dateAndUnite = new TextView(getApplicationContext());
+                            // date au format français
+                            SimpleDateFormat spf = new SimpleDateFormat("yyyy-mm-dd");
+                            Date dateObject = spf.parse(examen.getString("DATE_EVENEMENT"));
+                            spf = new SimpleDateFormat("dd/mm/yyyy");
+                            String dateString = spf.format(dateObject);
+                            dateAndUnite.setText(dateString + " - " + examen.getString("LIBELLE"));
+                            // styles dateAndUnite
+                            dateAndUnite.setPadding(40,15, 15, 5);
+                            dateAndUnite.setTextColor(Color.BLACK);
+                            dateAndUnite.setTypeface(Typeface.DEFAULT_BOLD);
+                            TextView horairesAndSalle = new TextView(getApplicationContext());
+                            horairesAndSalle.setText(examen.getString("HEURE_DEB") + " à " + examen.getString("HEURE_FIN") + " (" + examen.getString("LIB_SALLE") + ")");
+                            // style horairesAndSalle
+                            horairesAndSalle.setPadding(40,0,15,25);
+                            unExamen.addView(dateAndUnite);
+                            unExamen.addView(horairesAndSalle);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemExamen.addView(unExamen);
+                                }
+                            });
                         }
                     }
-                } catch (JSONException e) {
+                } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
             }
