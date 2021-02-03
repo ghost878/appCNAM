@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,6 +93,18 @@ public class MainActivity extends AppCompatActivity {
                                 formation = jsonResponse.getJSONObject("formation");
                                 Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(homeActivity);
+                            }
+                            else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Context context = getApplicationContext();
+                                        CharSequence errorMessage = "Woops - Identifiant ou mot de passe invalide";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast toast = Toast.makeText(context,errorMessage,duration);
+                                        toast.show();
+                                    }
+                                });
                             }
 
 
