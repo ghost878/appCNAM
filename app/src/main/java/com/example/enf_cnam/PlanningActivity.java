@@ -148,12 +148,12 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     public void listPlanningDay(final LocalDate date) throws JSONException {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                cadreCours.removeAllViews();
-//            }
-//        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cadreCours.removeAllViews();
+            }
+        });
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         JSONArray cours = getPlanningJour(dtf.format(date));
         //final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("EE, dd MMMM yyyy");
