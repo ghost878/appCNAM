@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -64,66 +65,58 @@ public class PlanningActivity extends AppCompatActivity {
                 }
             }
         });
-        jour.start();
-
         //PLANNING SEMAINE
-//        Thread semaine = new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    OkHttpClient client = new OkHttpClient();
-//                    Request request = new Request.Builder()
-//                            .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=planning&id=" + MainActivity.formation.getString("ID_CNAM"))
-//                            .build();
-//                    Response response = client.newCall(request).execute();
-//                    String responseBody = response.body().string();
-//                    System.out.println("Response :  " + responseBody);
-//                    JSONArray coursSemaine = new JSONArray(responseBody);
-//                    ArrayList<String> joursSemaine = new ArrayList<>();
-//
-//                    for(int i = 0; i < coursSemaine.length();i++) {
-//                        JSONObject detailCours = coursSemaine.getJSONObject(i);
-//                        if(!joursSemaine.contains(detailCours.getString("dayOfWeek"))){
-//                            final TextView jour = new TextView(getApplicationContext());
-//                            jour.setText(detailCours.getString("dayOfWeek"));
-//                            jour.setGravity(Gravity.CENTER);
-//                            jour.setPadding(0,20,0, 20);
-//                            jour.setTextColor(Color.rgb(196,4,44));
-//                            jour.setTypeface(Typeface.DEFAULT_BOLD);
-//                            jour.setTextSize(16);
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    planningSemaine.addView(jour);
-//                                }
-//                            });
-//                            joursSemaine.add(detailCours.getString("dayOfWeek"));
-//                        }
-//                        final TextView horaire = new TextView(getApplicationContext());
-//                        final TextView unite = new TextView(getApplicationContext());
-//                        horaire.setText(detailCours.getString("horaire"));
-//                        unite.setText(detailCours.getString("unite"));
-//                        unite.setPadding(5,5, 5, 10);
-//                        horaire.setPadding(5,5, 5, 5);
-//                        unite.setTextColor(Color.BLACK);
-//                        horaire.setTextColor(Color.BLACK);
-//                        unite.setTypeface(Typeface.DEFAULT_BOLD);
-//                        horaire.setTypeface(Typeface.DEFAULT_BOLD);
-//
-//
-//
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                planningSemaine.addView(horaire);
-//                                planningSemaine.addView(unite);
-//                            }
-//                        });
-//                    }
-//                } catch (IOException | JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }});
-//        semaine.start();
+        Thread semaine = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=planning&id=" + MainActivity.formation.getString("ID_CNAM"))
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String responseBody = response.body().string();
+                    System.out.println("Response :  " + responseBody);
+                    JSONArray coursSemaine = new JSONArray(responseBody);
+                    ArrayList<String> joursSemaine = new ArrayList<>();
+
+                    for(int i = 0; i < coursSemaine.length();i++) {
+                        JSONObject detailCours = coursSemaine.getJSONObject(i);
+                        if(!joursSemaine.contains(detailCours.getString("dayOfWeek"))){
+                            final TextView jour = new TextView(getApplicationContext());
+                            jour.setText(detailCours.getString("dayOfWeek"));
+                            jour.setGravity(Gravity.CENTER);
+                            jour.setPadding(0,50,0, 20);
+                            jour.setTextColor(Color.rgb(196,4,44));
+                            jour.setTypeface(Typeface.DEFAULT_BOLD);
+                            jour.setTextSize(16);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    planningSemaine.addView(jour);
+                                }
+                            });
+                            joursSemaine.add(detailCours.getString("dayOfWeek"));
+                        }
+                        final TextView horaire = new TextView(getApplicationContext());
+                        horaire.setText(detailCours.getString("horaire") + " " + detailCours.getString("unite"));
+                        horaire.setPadding(30,10, 5, 5);
+                        horaire.setTextColor(Color.BLACK);
+
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                planningSemaine.addView(horaire);
+                            }
+                        });
+                    }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }});
+        semaine.start();
+        jour.start();
+        planningSemaine.setVisibility(View.GONE);
     }
 
     public JSONArray getPlanningJour(final String date) {
