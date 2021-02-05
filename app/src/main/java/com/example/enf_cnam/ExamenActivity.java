@@ -122,4 +122,9 @@ public class ExamenActivity extends AppCompatActivity {
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
+
+    public void viewUserInfo(View v) throws JSONException {
+        Intent userActivity = new Intent(ExamenActivity.this, UserActivity.class);
+        startActivity(userActivity);
+    }
 }

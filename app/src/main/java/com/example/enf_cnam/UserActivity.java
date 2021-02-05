@@ -2,70 +2,153 @@ package com.example.enf_cnam;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
 
     private LinearLayout infoLayout;
+    private LinearLayout cadreInfo;
+    private ArrayList<View> viewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
         infoLayout = (LinearLayout) findViewById(R.id.infoLayout);
+        cadreInfo = (LinearLayout) findViewById(R.id.cadreInfo);
+        viewList = new ArrayList<>();
 
-        System.out.println("INFO");
+        try {
+            listInfo(MainActivity.auditeurInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-        //infoLayout.removeAllViews();
-        final TextView titre = new TextView(this);
-        titre.setText("Informations personnelles : ");
-        titre.setPadding(200,40,20,30);
-        titre.setTextSize(20);
-        titre.setTextColor(Color.BLACK);
-        titre.setTypeface(Typeface.DEFAULT_BOLD);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                infoLayout.addView(titre);
-            }
-        });
-
-        Iterator<String> keys = MainActivity.auditeurInfo.keys();
+    @SuppressLint("ResourceType")
+    public void listInfo(JSONObject jsonInfo) throws JSONException {
+        cadreInfo.removeAllViews();
+        Iterator<String> keys = jsonInfo.keys();
+        ArrayList<String> blackList = new ArrayList<>();
+        blackList.add("ID_AUDITEUR");
+        blackList.add("ID_FORMATION");
+        blackList.add("IDENTIFIANT_ENF");
+        ArrayList<String> disableList = new ArrayList<>();
+        disableList.add("NOM");
+        disableList.add("DATE_NAISSANCE");
+        disableList.add("MEL_PRO");
+        disableList.add("INE_CNAM");
+        ArrayList<String> spinnerList = new ArrayList<>();
+        spinnerList.add("CIVILITE");
+        spinnerList.add("NATIONALITE");
         while(keys.hasNext()) {
-            String key = keys.next();
-            if (key.length() > 2) {
-                TextView data = new TextView(this);
-                try {
-                    if(!(MainActivity.auditeurInfo.getString(key).equals("null"))) {
-                        data.setText(key + " : " + MainActivity.auditeurInfo.getString(key));
-                    } else {
-                        data.setText(key + " : " + "Non défini");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                data.setTextColor(Color.BLACK);
-                data.setPadding(20,10,20,10);
-                infoLayout.addView(data);
+            final String key = keys.next();
+            if (!blackList.contains(key) && key.length() > 2) {
+                LinearLayout ligne = new LinearLayout(getApplicationContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                params.gravity = Gravity.CENTER;
+                ligne.setLayoutParams(params);
+                ligne.setOrientation(LinearLayout.HORIZONTAL);
+                TextView libelle = new TextView(getApplicationContext());
+                libelle.setText(key + " : ");
+                ligne.addView(libelle);
 
+                if (spinnerList.contains(key)) {
+                    List<String> spinner = new ArrayList<String>();
+                    switch (key) {
+                        case "NATIONALITE":
+                            spinner.add("Français");
+                            spinner.add("Anglais");
+                            spinner.add("Allemand");
+                            break;
+                        case "CIVILITE":
+                            spinner.add("Monsieur");
+                            spinner.add("Madame");
+                            spinner.add("Mademoiselle");
+                            break;
+                        default:
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                            this, android.R.layout.simple_spinner_item, spinner);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner select = new Spinner(getApplicationContext());
+                    select.setAdapter(adapter);
+                    select.setSelection(adapter.getPosition(jsonInfo.getString(key)));
+                    select.setTag(key);
+                    select.setMinimumWidth(500);
+                    select.setGravity(Gravity.CENTER);
+                    ligne.addView(select);
+                    viewList.add(select);
+                } else {
+                    EditText editText = new EditText(getApplicationContext());
+                    editText.setText(jsonInfo.getString(key));
+                    editText.setTag(key);
+                    editText.setWidth(500);
+                    editText.setGravity(Gravity.CENTER);
+                    ligne.addView(editText);
+                    viewList.add(editText);
+                    if (disableList.contains(key)) {
+                        editText.setEnabled(false);
+                    }
+                    if(key.equals("PASSWORD")) {
+                        editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                    }
+
+                }
+                cadreInfo.addView(ligne);
             }
+
         }
 
 
+    }
 
+    @SuppressLint("ResourceType")
+    public void editInfo(View v) throws JSONException {
+        JSONObject data = new JSONObject();
+        JSONObject infos = new JSONObject();
+        infos.put("ID_AUDITEUR", MainActivity.auditeurInfo.getString("ID_AUDITEUR"));
+        for(int i=0; i < viewList.size();i++) {
+            View view =  viewList.get(i);
+            if (view instanceof EditText) {
+                EditText edit = (EditText) view;
+                infos.put((String) edit.getTag(), edit.getText());
+            }
+            if (view instanceof Spinner) {
+                Spinner spinner = (Spinner) view;
+                infos.put((String) spinner.getTag(), spinner.getSelectedItem().toString());
+
+            }
+        }
+        data.put("auditeur", infos);
+        System.out.println(data.toString());
     }
 
     public void viewHome(View v) {
@@ -83,4 +166,8 @@ public class UserActivity extends AppCompatActivity {
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
+
+    public void viewUserInfo(View v) {
+    }
+
 }

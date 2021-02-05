@@ -177,4 +177,7 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(mainActivity);
     }
 
+    public void viewHome(View v) {
+    }
+
 }
