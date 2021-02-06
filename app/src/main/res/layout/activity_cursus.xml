@@ -18,9 +18,28 @@
             android:layout_height="160dp" />
 
         <LinearLayout
+            android:id="@+id/cursusLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/titreLayout"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"></LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="438dp">
+
+                <LinearLayout
+                    android:id="@+id/contenuLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+            </ScrollView>
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
