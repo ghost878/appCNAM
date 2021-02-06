@@ -1,19 +1,136 @@
 package com.example.enf_cnam;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 public class CursusActivity extends AppCompatActivity {
+
+    private LinearLayout cursusLayout;
+    private LinearLayout titreLayout;
+    private LinearLayout contenuLayout;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cursus);
+
+        cursusLayout = (LinearLayout) findViewById(R.id.cursusLayout);
+        titreLayout = (LinearLayout) findViewById(R.id.titreLayout);
+        contenuLayout = (LinearLayout) findViewById(R.id.contenuLayout);
+
+
+        Thread cursus = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void run() {
+                try {
+                    listCursus();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        cursus.start();
+
+
+        TextView titre = new TextView(getApplicationContext());
+        titre.setText("Relevé de notes");
+        titreLayout.addView(titre);
+
     }
+
+
+    public JSONArray getCursus() {
+        JSONArray results = null;
+        try {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("http://apicnam.000webhostapp.com/API/Controllers/NoteController.php?view=getByYearAndAuditeur&year=2020&id=" + MainActivity.auditeurInfo.getString("ID_AUDITEUR"))
+                    .build();
+            Response response = client.newCall(request).execute();
+            String responseBody = response.body().string();
+            //System.out.println("Response :  " + responseBody);
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            if(jsonResponse.has("notes")) {
+                results = jsonResponse.getJSONArray("notes");
+            }
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+
+    public void listCursus() throws JSONException {
+
+        JSONArray cursus = getCursus();
+        System.out.println(cursus);
+        if(cursus != null) {
+            for(int i=0; i<cursus.length(); i++) {
+                System.out.println("for");
+                JSONObject detailCursus = cursus.getJSONObject(i);
+                final LinearLayout unCursus = new LinearLayout(getApplicationContext());
+                unCursus.setOrientation(LinearLayout.VERTICAL);
+                TextView ue = new TextView(getApplicationContext());
+                ue.setText(detailCursus.getString("CODE") + " - " + detailCursus.getString("LIBELLE") + " (" + detailCursus.getString("ECTS") + ")");
+                TextView annee = new TextView(getApplicationContext());
+                annee.setText(detailCursus.getString("ANNEE_DEBUT") + " / " + detailCursus.getString("ANNEE_FIN"));
+                TextView note = new TextView(getApplicationContext());
+                note.setText(detailCursus.getString("NOTE"));
+
+                unCursus.addView(ue);
+                unCursus.addView(annee);
+                unCursus.addView(note);
+                unCursus.setPadding(10,20,10,20);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        contenuLayout.addView(unCursus);
+                    }
+                });
+            }
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void viewHome(View v) {
         Intent homeActivity = new Intent(CursusActivity.this, HomeActivity.class);
