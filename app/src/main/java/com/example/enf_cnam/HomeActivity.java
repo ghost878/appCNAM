@@ -79,7 +79,6 @@ public class HomeActivity extends AppCompatActivity {
         enseignements = (LinearLayout) findViewById(R.id.enseignements);
         hello = (TextView) findViewById(R.id.hello);
 
-
         hello.setTextColor(Color.BLACK);
         hello.setPadding(0,30,0,30);
         try {
@@ -140,11 +139,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void viewPlanning(View v) throws JSONException {
-//        homeLayout.setVisibility(View.GONE);
-//        planingLayout.setVisibility(View.VISIBLE);
-//        planningJour.setVisibility(View.VISIBLE);
-//        planningSemaine.setVisibility(View.GONE);
-        //PLANNING JOUR
         Intent planningActivity = new Intent(HomeActivity.this, PlanningActivity.class);
         startActivity(planningActivity);
     }
@@ -164,6 +158,7 @@ public class HomeActivity extends AppCompatActivity {
     public void logout(View v) {
         Intent mainActivity = new Intent(HomeActivity.this, MainActivity.class);
         startActivity(mainActivity);
+        MainActivity.token = "";
     }
 
     public void mail(View v) {
@@ -178,6 +173,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void viewHome(View v) {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.token == "") {
+            Intent mainActivity = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 
 }

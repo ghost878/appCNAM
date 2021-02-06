@@ -25,6 +25,7 @@ public class CursusActivity extends AppCompatActivity {
     public void logout(View v) {
         Intent mainActivity = new Intent(CursusActivity.this, MainActivity.class);
         startActivity(mainActivity);
+        MainActivity.token = "";
     }
 
     public void mail(View v) {
@@ -36,5 +37,13 @@ public class CursusActivity extends AppCompatActivity {
     public void viewUserInfo(View v) throws JSONException {
         Intent userActivity = new Intent(CursusActivity.this, UserActivity.class);
         startActivity(userActivity);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.token == "") {
+            Intent mainActivity = new Intent(CursusActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 }

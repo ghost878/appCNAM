@@ -25,8 +25,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ExamenActivity extends AppCompatActivity {
@@ -90,13 +92,18 @@ public class ExamenActivity extends AppCompatActivity {
      */
     public JSONArray listExamens(int idFormation) {
         JSONArray results = null;
+        System.out.println(MainActivity.token);
         try {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url("http://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getExamens&id=" + idFormation)
+                    .addHeader("content-type", "application/json")
+                    .addHeader("accept-Language", "fr")
+                    .addHeader("authorization", MainActivity.token)
                     .build();
             Response reponse = client.newCall(request).execute();
             String responseBody = reponse.body().string();
+            System.out.println(responseBody);
             JSONObject jsonReponse = new JSONObject(responseBody);
             if (jsonReponse.has("examens")) {
                 results = jsonReponse.getJSONArray("examens");
@@ -115,6 +122,7 @@ public class ExamenActivity extends AppCompatActivity {
     public void logout(View v) {
         Intent mainActivity = new Intent(ExamenActivity.this, MainActivity.class);
         startActivity(mainActivity);
+        MainActivity.token = "";
     }
 
     public void mail(View v) {
@@ -126,5 +134,14 @@ public class ExamenActivity extends AppCompatActivity {
     public void viewUserInfo(View v) throws JSONException {
         Intent userActivity = new Intent(ExamenActivity.this, UserActivity.class);
         startActivity(userActivity);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.token == "") {
+            Intent mainActivity = new Intent(ExamenActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 }

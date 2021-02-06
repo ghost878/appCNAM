@@ -31,9 +31,10 @@
                 android:layout_marginLeft="15px"
                 android:layout_weight="1"
                 android:padding="15px"
-                android:text="Examens à venir"
+                android:text="EXAMENS"
+                android:gravity="center"
                 android:textColor="#C1002A"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:typeface="normal" />
 

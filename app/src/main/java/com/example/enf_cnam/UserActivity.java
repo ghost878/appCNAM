@@ -3,6 +3,7 @@ package com.example.enf_cnam;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,10 +19,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +32,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class UserActivity extends AppCompatActivity {
 
@@ -53,7 +62,12 @@ public class UserActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
     public void listInfo(JSONObject jsonInfo) throws JSONException {
-        cadreInfo.removeAllViews();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cadreInfo.removeAllViews();            }
+        });
+
         Iterator<String> keys = jsonInfo.keys();
         ArrayList<String> blackList = new ArrayList<>();
         blackList.add("ID_AUDITEUR");
@@ -70,9 +84,10 @@ public class UserActivity extends AppCompatActivity {
         while(keys.hasNext()) {
             final String key = keys.next();
             if (!blackList.contains(key) && key.length() > 2) {
-                LinearLayout ligne = new LinearLayout(getApplicationContext());
+                final LinearLayout ligne = new LinearLayout(getApplicationContext());
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 params.gravity = Gravity.CENTER;
+                //params.height = 20;
                 ligne.setLayoutParams(params);
                 ligne.setOrientation(LinearLayout.HORIZONTAL);
                 TextView libelle = new TextView(getApplicationContext());
@@ -122,7 +137,13 @@ public class UserActivity extends AppCompatActivity {
                     }
 
                 }
-                cadreInfo.addView(ligne);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cadreInfo.addView(ligne);
+                    }
+                });
             }
 
         }
@@ -132,7 +153,7 @@ public class UserActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
     public void editInfo(View v) throws JSONException {
-        JSONObject data = new JSONObject();
+        final JSONObject data = new JSONObject();
         JSONObject infos = new JSONObject();
         infos.put("ID_AUDITEUR", MainActivity.auditeurInfo.getString("ID_AUDITEUR"));
         for(int i=0; i < viewList.size();i++) {
@@ -149,6 +170,67 @@ public class UserActivity extends AppCompatActivity {
         }
         data.put("auditeur", infos);
         System.out.println(data.toString());
+        Thread edit = new Thread(new Runnable() {
+            public void run() {
+                System.out.println("Coucou2");
+                OkHttpClient client = new OkHttpClient();
+
+                RequestBody formBody = new FormBody.Builder()
+                        .add("data",data.toString())
+                        .build();
+                try {
+                Request request = new Request.Builder()
+                        .url("https://apicnam.000webhostapp.com/API/Controllers/AuditeurController.php?view=edit&id=" + MainActivity.auditeurInfo.getString("ID_AUDITEUR"))
+                        //.headers("Content-Type", "application/json", "Accept-Language", "fr", "Authorization", )
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept-Language", "fr")
+                        .addHeader("authorization", MainActivity.token)
+                        .method("POST", formBody)
+                        .build();
+                Response response = null;
+
+                    response = client.newCall(request).execute();
+                    String responseBody = response.body().string();
+                    System.out.println("Response :  " + responseBody);
+                    final JSONObject jsonResponse = new JSONObject(responseBody);
+                    boolean editDone = jsonResponse.getBoolean("exist");
+                    if(editDone == true) {
+                       listInfo(jsonResponse.getJSONObject("auditeur"));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Context context = getApplicationContext();
+                                CharSequence errorMessage = "Modifications bien effectuées !";
+                                int duration = Toast.LENGTH_LONG;
+                                Toast toast = Toast.makeText(context, errorMessage, duration);
+                                toast.show();
+                            }});
+                    }
+                    else {
+                        System.out.println("TOAST");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Context context = getApplicationContext();
+                                CharSequence errorMessage = null;
+                                try {
+                                    errorMessage = jsonResponse.getString("error");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                int duration = Toast.LENGTH_LONG;
+                                Toast toast = Toast.makeText(context,errorMessage,duration);
+                                toast.show();
+                            }
+                        });
+                    }
+
+                } catch (IOException | JSONException /*| JSONException*/ e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        edit.start();
     }
 
     public void viewHome(View v) {
@@ -159,6 +241,7 @@ public class UserActivity extends AppCompatActivity {
     public void logout(View v) {
         Intent mainActivity = new Intent(UserActivity.this, MainActivity.class);
         startActivity(mainActivity);
+        MainActivity.token = "";
     }
 
     public void mail(View v) {
@@ -168,6 +251,15 @@ public class UserActivity extends AppCompatActivity {
     }
 
     public void viewUserInfo(View v) {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.token == "") {
+            Intent mainActivity = new Intent(UserActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 
 }

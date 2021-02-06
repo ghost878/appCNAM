@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static JSONObject auditeurInfo;
     public static JSONArray enseignements;
     public static JSONObject formation;
+    public static String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                                 auditeurInfo = jsonResponse.getJSONObject("auditeur");
                                 enseignements = jsonResponse.getJSONArray("enseignements");
                                 formation = jsonResponse.getJSONObject("formation");
+                                token = jsonResponse.getString("token");
                                 Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(homeActivity);
                             }

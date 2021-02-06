@@ -65,6 +65,9 @@ public class MoodleActivity extends AppCompatActivity {
                 try {
                     request = new Request.Builder()
                             .url("https://apicnam.000webhostapp.com/API/Controllers/AuditeurController.php?view=files_unite&unite=" + HomeActivity.uniteClick.getString("CODE") )
+                            .addHeader("content-type", "application/json")
+                            .addHeader("accept-Language", "fr")
+                            .addHeader("authorization", MainActivity.token)
                             .build();
                     Response response = client.newCall(request).execute();
                     String responseBody = response.body().string();
@@ -130,6 +133,7 @@ public class MoodleActivity extends AppCompatActivity {
     public void logout(View v) {
         Intent mainActivity = new Intent(MoodleActivity.this, MainActivity.class);
         startActivity(mainActivity);
+        MainActivity.token = "";
     }
 
     public void mail(View v) {
@@ -141,5 +145,14 @@ public class MoodleActivity extends AppCompatActivity {
     public void viewUserInfo(View v) throws JSONException {
         Intent userActivity = new Intent(MoodleActivity.this, UserActivity.class);
         startActivity(userActivity);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.token == "") {
+            Intent mainActivity = new Intent(MoodleActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 }
