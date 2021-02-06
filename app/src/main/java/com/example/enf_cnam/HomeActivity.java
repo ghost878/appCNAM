@@ -4,6 +4,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -82,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
         hello.setTextColor(Color.BLACK);
         hello.setPadding(0,30,0,30);
         try {
-            hello.setText("Bonjour " + MainActivity.auditeurInfo.getString("PRENOM"));
+            hello.setText(getString(R.string.hello) + MainActivity.auditeurInfo.getString("PRENOM"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -173,6 +175,16 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void viewHome(View v) {
+    }
+
+    public void switchLangue(View v) {
+        System.out.println("SWITCH");
+        String languageToLoad  = "en"; // your language
+        Locale locale = new Locale(languageToLoad);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
     }
 
     @Override
