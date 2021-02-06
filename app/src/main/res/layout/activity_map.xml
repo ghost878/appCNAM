@@ -18,31 +18,66 @@
             android:layout_width="match_parent"
             android:layout_height="160dp" />
 
-        <LinearLayout
-            android:id="@+id/mapLayout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView4"
+            <LinearLayout
+                android:id="@+id/mapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="findNearestCNAM"
-                android:text="Rechercher" />
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="CENTRES CNAM"
+                    android:textColor="#C4042C"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="372dp" />
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:onClick="findNearestCNAM"
+                    android:text="Trouvez le centre cnam le plus proche" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/libelleCNAM"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textStyle="bold"
+                    android:textSize="7pt"
+                    android:textColor="@android:color/black"
+                    android:gravity="center"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/adresseCNAM"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"
+                    android:textColor="@android:color/black"
+                    android:textSize="7pt"
+                    android:text="TextView" />
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="388dp" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
