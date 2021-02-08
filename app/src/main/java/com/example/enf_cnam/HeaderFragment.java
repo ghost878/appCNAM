@@ -45,6 +45,10 @@ public class HeaderFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Méthode de création du menu fixe header dans fragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +57,10 @@ public class HeaderFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    /**
+     * Méthode de création de la vue
+     * @param savedInstanceState
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

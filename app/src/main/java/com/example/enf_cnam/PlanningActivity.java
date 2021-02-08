@@ -48,6 +48,10 @@ public class PlanningActivity extends AppCompatActivity {
     private TextView libelleWeek;
 
     @Override
+
+    /**
+     * Méthode de création de l'activité du planning. Appel des fonctions qui affichent les vues jour et semaines
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
@@ -89,6 +93,11 @@ public class PlanningActivity extends AppCompatActivity {
         semaine.start();
     }
 
+    /**
+     * Méthode de la requête HTTP qui récupère le planning du jour en fonction de la date en paramètre
+     * @param date Date sélectionnée
+     * @return  JSONArray
+     */
     public JSONArray getPlanningJour(final String date) {
         JSONArray results = null;
         try {
@@ -105,7 +114,11 @@ public class PlanningActivity extends AppCompatActivity {
         return results;
     }
 
-
+    /**
+     * Méthode de la requête HTTP qui récupère le planning de la semaine en fonction de la date en paramètre
+     * @param date Date sélectionnée
+     * @return JSONArray
+     */
     public JSONArray getPlanningSemaine(final String date) {
         JSONArray results = null;
         try {
@@ -124,6 +137,11 @@ public class PlanningActivity extends AppCompatActivity {
         return results;
     }
 
+    /**
+     * Méthode qui affiche le planning du jour dans la vue en fonction de la date en paramètre
+     * @param date
+     * @throws JSONException
+     */
     public void listPlanningDay(final LocalDate date) throws JSONException {
         runOnUiThread(new Runnable() {
             @Override
@@ -205,6 +223,12 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Méthode qui affiche le planning de la semaine dans la vue en fonction de la date en paramètre
+     * @param date Date sélectionnée
+     * @throws JSONException
+     * @throws ParseException
+     */
     public void listPlanningWeek(final LocalDate date) throws JSONException, ParseException {
         runOnUiThread(new Runnable() {
             @Override
@@ -291,6 +315,10 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Méthode qui affiche le jour suivant
+     * @param v
+     */
     public void nextDayPlanning(View v) {
         date = LocalDate.parse(date.toString()).plusDays(1);
         Thread nextDay = new Thread(new Runnable() {
@@ -305,6 +333,10 @@ public class PlanningActivity extends AppCompatActivity {
         nextDay.start();
     }
 
+    /**
+     * Méthode qui affiche le jour précédent
+     * @param v
+     */
     public void prevDayPlanning(View v) {
         date = LocalDate.parse(date.toString()).minusDays(1);
         Thread prevDay = new Thread(new Runnable() {
@@ -319,6 +351,10 @@ public class PlanningActivity extends AppCompatActivity {
         prevDay.start();
     }
 
+    /**
+     * Méthode qui affiche la semaine suivante
+     * @param v
+     */
     public void nextWeekPlanning(View v) {
         date = LocalDate.parse(date.toString()).plusDays(7);
         Thread nextDay = new Thread(new Runnable() {
@@ -333,6 +369,10 @@ public class PlanningActivity extends AppCompatActivity {
         nextDay.start();
     }
 
+    /**
+     * Méthode qui affiche la semaine précédente
+     * @param v
+     */
     public void prevWeekPlanning(View v) {
         date = LocalDate.parse(date.toString()).minusDays(7);
         Thread nextDay = new Thread(new Runnable() {
@@ -347,6 +387,10 @@ public class PlanningActivity extends AppCompatActivity {
         nextDay.start();
     }
 
+    /**
+     * Méthode permettant de switcher entre la vue jour et la vue semaine
+     * @param v
+     */
     public void changeView(View v) {
 
         if(semaineActive == false) {
@@ -362,27 +406,48 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *  Méthode de la page redirigeant vers la page d'accueil
+     * @param v
+     */
     public void viewHome(View v) {
         Intent homeActivity = new Intent(PlanningActivity.this, HomeActivity.class);
         startActivity(homeActivity);
     }
+
+    /**
+     * Méthode du fragment redirigeant vers la page du profil utilisateur
+     * @param v
+     */
     public void viewUserInfo(View v) {
         Intent userActivity = new Intent(PlanningActivity.this, UserActivity.class);
         startActivity(userActivity);
     }
 
+    /**
+     *  Méthode du fragment déconnectant l'utilisateur en écrasant le token
+     *  et redirigeant vers la page d'authentification
+     * @param v
+     */
     public void logout(View v) {
         Intent mainActivity = new Intent(PlanningActivity.this, MainActivity.class);
         startActivity(mainActivity);
         MainActivity.token = "";
     }
 
+    /**
+     * Méthode du fragment qui redirige vers Outlook
+     * @param v
+     */
     public void mail(View v) {
         Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
 
+    /**
+     * Méthode de rappel de page. Elle vérifie  si le token de connexion est nul. Dans ce cas ça redirige vers la page d'authentification
+     */
     @Override
     protected void onResume() {
         super.onResume();

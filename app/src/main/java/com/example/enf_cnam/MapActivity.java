@@ -47,6 +47,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private JSONArray etablissements;
     private Button findButton;
 
+    /**
+     * Méthode de création de l'activité map et mise en place de la MapView
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +66,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapView.getMapAsync(this);
     }
 
+    /** Méthode appelé quand la map est prête à être utilisé.
+     * Ajout des marqueurs des différents centres CNAM à l'aide des coordonnées GPS reçu de l'API
+     * Récupère la localisation de l'utilisateur
+     * @param googleMap Instance Map
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -134,7 +143,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.72234, 5.65267), 6));
 
     }
-        
+
+    /**
+     * Méthode affichant le CNAM le plus proche à l'aide de Google Distance Matrix
+     * @param v
+     */
     public void findNearestCNAM(View v) {
         Thread nearest = new Thread(new Runnable() {
             public void run() {
@@ -152,17 +165,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
                 Handler mainHandler = new Handler(getApplicationContext().getMainLooper());
                 final int finalIndexMinimum = indexMinimum;
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            showCnamDetails(finalIndexMinimum);
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(etablissements.getJSONObject(finalIndexMinimum).getDouble("LATITUDE"), etablissements.getJSONObject(finalIndexMinimum).getDouble("LONGITUDE")), 12));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        if(finalIndexMinimum != -1) {
+                            try {
+                                showCnamDetails(finalIndexMinimum);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(etablissements.getJSONObject(finalIndexMinimum).getDouble("LATITUDE"), etablissements.getJSONObject(finalIndexMinimum).getDouble("LONGITUDE")), 12));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Context context = getApplicationContext();
+                            CharSequence errorMessage = getString(R.string.locateError);
+                            int duration = Toast.LENGTH_LONG;
+                            Toast toast = Toast.makeText(context, errorMessage, duration);
+                            toast.show();
                         }
+
                     }
                 });
             }
@@ -189,6 +215,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return results;
     }
 
+
+    /**
+     * Méthode de l'appel HTTP de la requête des distances vers Distance Matrix API  . Retourne un tableau JSON des distances et des durées de chaque trajet.
+     * @return      JsonArray
+     */
     public JSONArray getDistances(String origins, String destinations) {
         JSONArray results = null;
         try {
@@ -206,30 +237,50 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-
-
+    /**
+     *  Méthode de la page redirigeant vers la page d'accueil
+     * @param v
+     */
     public void viewHome(View v) {
         Intent homeActivity = new Intent(MapActivity.this, HomeActivity.class);
         startActivity(homeActivity);
     }
 
-    public void viewUserInfo(View v) throws JSONException {
+    /**
+     * Méthode du fragment redirigeant vers la page du profil utilisateur
+     * @param v
+     */
+    public void viewUserInfo(View v) {
         Intent userActivity = new Intent(MapActivity.this, UserActivity.class);
         startActivity(userActivity);
     }
 
+    /**
+     *  Méthode du fragment déconnectant l'utilisateur en écrasant le token
+     *  et redirigeant vers la page d'authentification
+     * @param v
+     */
     public void logout(View v) {
         Intent mainActivity = new Intent(MapActivity.this, MainActivity.class);
         startActivity(mainActivity);
         MainActivity.token = "";
     }
 
+    /**
+     * Méthode du fragment qui redirige vers Outlook
+     * @param v
+     */
     public void mail(View v) {
         Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
 
+    /**
+     * Affiche les inormations de centre CNAM
+     * @param position Position du centre dans le JSONArray getEtablissements()
+     * @throws JSONException
+     */
     public void showCnamDetails(int position) throws JSONException {
         libelleCNAM.setText(etablissements.getJSONObject(position).getString("LIBELLE") + " - " + etablissements.getJSONObject(position).getString("TELEPHONE"));
         adresseCNAM.setText(etablissements.getJSONObject(position).getString("ADRESSE"));
@@ -237,6 +288,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         adresseCNAM.setVisibility(View.VISIBLE);
     }
 
+
+    /**
+     * Méthode de rappel de page. Elle vérifie  si le token de connexion est nul. Dans ce cas ça redirige vers la page d'authentification
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -246,6 +301,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Méthode appelé quand on clique sur un marqueur
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
         System.out.println(marker.getTag());

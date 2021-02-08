@@ -32,7 +32,7 @@
             android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="E-mail :" />
+            android:text="@string/email" />
 
         <EditText
             android:id="@+id/editTextTextEmailAddress"
@@ -52,7 +52,7 @@
             android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mot de passe :" />
+            android:text="@string/pass" />
 
         <EditText
             android:id="@+id/editTextTextPassword2"
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="Login" />
+            android:text="@string/loginButton" />
 
     </LinearLayout>
 

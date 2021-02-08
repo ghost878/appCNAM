@@ -40,8 +40,11 @@
     <string name="JEUDI">Jeudi</string>
     <string name="VENDREDI">Vendredi</string>
     <string name="sucessMessage">Les modifications ont bien été effectués !</string>
-    <string name="locateError">La localisation est mal activé !</string>
+    <string name="locateError">La localisation n\'est pas activé !</string>
     <string name="knownActivity">Vous êtes déjà sur cette interface !</string>
+    <string name="email">Adresse e-mail</string>
+    <string name="pass">Mot de passe</string>
+    <string name="loginButton">SE CONNECTER</string>
 
     <string-array name="years">
         <item>2019-2020</item>

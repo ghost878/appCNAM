@@ -24,6 +24,11 @@ public class ExamenActivity extends AppCompatActivity {
 
     private LinearLayout itemExamen;
 
+
+    /**
+     * Méthode de création de l'activité Examens. Récupère les données de getExamens() dans un JSONArray et les affiche dans la page.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +79,7 @@ public class ExamenActivity extends AppCompatActivity {
     }
 
     /**
-     * Fonction: listExamens
+     * Fonction: getExamens
      * Description: Liste les examens retournés depuis l'API
      * @param idFormation Identifiant de la formation
      * @return JSONArray
@@ -95,28 +100,48 @@ public class ExamenActivity extends AppCompatActivity {
         return results;
     }
 
+    /**
+     *  Méthode de la page redirigeant vers la page d'accueil
+     * @param v
+     */
     public void viewHome(View v) {
         Intent homeActivity = new Intent(ExamenActivity.this, HomeActivity.class);
         startActivity(homeActivity);
     }
 
+    /**
+     *  Méthode du fragment déconnectant l'utilisateur en écrasant le token
+     *  et redirigeant vers la page d'authentification
+     * @param v
+     */
     public void logout(View v) {
         Intent mainActivity = new Intent(ExamenActivity.this, MainActivity.class);
         startActivity(mainActivity);
         MainActivity.token = "";
     }
 
+    /**
+     * Méthode du fragment qui redirige vers Outlook
+     * @param v
+     */
     public void mail(View v) {
         Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
 
-    public void viewUserInfo(View v) throws JSONException {
+    /**
+     * Méthode du fragment redirigeant vers la page du profil utilisateur
+     * @param v
+     */
+    public void viewUserInfo(View v)  {
         Intent userActivity = new Intent(ExamenActivity.this, UserActivity.class);
         startActivity(userActivity);
     }
 
+    /**
+      * Méthode de rappel de page. Elle vérifie  si le token de connexion est nul. Dans ce cas ça redirige vers la page d'authentification
+     */
     @Override
     protected void onResume() {
         super.onResume();

@@ -40,8 +40,11 @@
     <string name="JEUDI">Thursday</string>
     <string name="VENDREDI">Friday</string>
     <string name="sucessMessage">The changes have been made !</string>
-    <string name="locateError">Localization is incorrectly activated</string>
+    <string name="locateError">Localization is not activated</string>
     <string name="knownActivity">You are already on this interface!</string>
+    <string name="email">E-mail adress</string>
+    <string name="pass">Password</string>
+    <string name="loginButton">LOGIN</string>
     <string-array name="years">
         <item>2019-2020</item>
         <item>2020-2021</item>

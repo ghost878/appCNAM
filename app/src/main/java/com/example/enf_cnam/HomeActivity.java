@@ -2,6 +2,7 @@ package com.example.enf_cnam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -45,6 +47,12 @@ public class HomeActivity extends AppCompatActivity {
         homeLayout = (LinearLayout) findViewById(R.id.homeLayout);
         enseignements = (LinearLayout) findViewById(R.id.enseignements);
         hello = (TextView) findViewById(R.id.hello);
+
+        Locale locale = new Locale(MainActivity.lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
         hello.setTextColor(Color.BLACK);
         hello.setPadding(0,30,30,0);
