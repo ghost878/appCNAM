@@ -66,6 +66,10 @@ public class UserActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceType")
+    /**
+     * @param jsonInfo Données json de l'utilisateur
+     * Description: Création des différents champs du formulaire de modification des informations personnelles, prérempli avec les informations actuelles de la BD.
+     */
     public void listInfo(JSONObject jsonInfo) throws JSONException {
         runOnUiThread(new Runnable() {
             @Override
@@ -189,6 +193,10 @@ public class UserActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceType")
+    /**
+     * @param v
+     * Description: Fonction se chargeant de faire la requête de modification des informations personnelles de l'utilisateur.
+     */
     public void editInfo(View v) throws JSONException {
         final JSONObject data = new JSONObject();
         JSONObject infos = new JSONObject();
@@ -278,6 +286,11 @@ public class UserActivity extends AppCompatActivity {
         });
         edit.start();
     }
+
+    /**
+     * Description: Fonction de changement de langue
+     * @param langue Langue souhaitée
+     */
     public void switchLangue(String langue) {
         System.out.println("lang" + langue);
         MainActivity.lang = langue;
@@ -291,23 +304,39 @@ public class UserActivity extends AppCompatActivity {
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
     }
 
+    /**
+     * Description: Redirection vers la vue HOME
+     * @param v
+     */
     public void viewHome(View v) {
         Intent homeActivity = new Intent(UserActivity.this, HomeActivity.class);
         startActivity(homeActivity);
     }
 
+    /**
+     * Description: Fonction de déconnexion
+     * @param v
+     */
     public void logout(View v) {
         Intent mainActivity = new Intent(UserActivity.this, MainActivity.class);
         startActivity(mainActivity);
         MainActivity.token = "";
     }
 
+    /**
+     * Description: Fonction de redirection vers Outlook
+     * @param v
+     */
     public void mail(View v) {
         Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
         viewIntent.setPackage("com.android.chrome");
         startActivity(viewIntent);
     }
 
+    /**
+     * Description: Fonction de redirection vers la page de visualisation des informations personnelles.
+     * @param v
+     */
     public void viewUserInfo(View v) {
         Context context = getApplicationContext();
         CharSequence errorMessage = getString(R.string.knownActivity);
