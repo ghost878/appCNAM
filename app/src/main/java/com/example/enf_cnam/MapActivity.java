@@ -1,10 +1,8 @@
 package com.example.enf_cnam;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -12,9 +10,12 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -29,21 +31,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    public static String origins ="";
+    public static String destinations = "";
     private MapView mapView;
     private GoogleMap mMap;
     private TextView libelleCNAM;
     private TextView adresseCNAM;
-    public static String origins ="";
-    public static String destinations = "";
     private JSONArray etablissements;
+    private Button findButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapView = (MapView) findViewById(R.id.mapView);
         libelleCNAM = (TextView) findViewById(R.id.libelleCNAM);
         adresseCNAM = (TextView) findViewById(R.id.adresseCNAM);
+        findButton = (Button) findViewById(R.id.buttonFind);
 
 
         mapView.onCreate(savedInstanceState);
@@ -62,64 +65,75 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         Thread markers = new Thread(new Runnable() {
             public void run() {
-                //final JSONArray etablissements = getEtablissements();
                 etablissements = getEtablissements();
                 for (int i = 0; i < etablissements.length(); i++) {
                     try {
                         final JSONObject etab = etablissements.getJSONObject(i);
                         destinations += etab.getDouble("LATITUDE") + "," + etab.getDouble("LONGITUDE") + "|";
+                        final int finalI = i;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 LatLng cnamEtab = null;
                                 try {
                                     cnamEtab = new LatLng(etab.getDouble("LATITUDE"), etab.getDouble("LONGITUDE"));
-                                    mMap.addMarker(new MarkerOptions()
+                                    Marker marker = mMap.addMarker(new MarkerOptions()
                                             .position(cnamEtab)
                                             .title(etab.getString("LIBELLE")));
+                                    marker.setTag(finalI);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         });
-//
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-
             }
         });
+
         markers.start();
         LocationManager lm = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String bestProvider = String.valueOf(lm.getBestProvider(criteria, true));
         try {
             Location location = lm.getLastKnownLocation(bestProvider);
-            origins = location.getLatitude() + "," + location.getLongitude();
-            final LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-            Handler posHandler = new Handler(getApplicationContext().getMainLooper());
-            posHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.position);
-                    Bitmap b = bitmapdraw.getBitmap();
-                    Bitmap smallMarker = Bitmap.createScaledBitmap(b, 50, 50, false);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(position)
-                            .title("Auditeur")
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
-                }});
+            if(location != null) {
+                origins = location.getLatitude() + "," + location.getLongitude();
+                final LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                Handler posHandler = new Handler(getApplicationContext().getMainLooper());
+                posHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.position);
+                        Bitmap b = bitmapdraw.getBitmap();
+                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 50, 50, false);
+                        Marker marker = mMap.addMarker(new MarkerOptions()
+                                .position(position)
+                                .title("Auditeur")
+                                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                        marker.setDraggable(false);
+                    }
+                });
+            } else {
+                findButton.setEnabled(false);
+                Context context = getApplicationContext();
+                CharSequence errorMessage = getString(R.string.locateError);
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, errorMessage, duration);
+                toast.show();
+            }
         } catch (SecurityException e) {
-            System.out.println("Erreur"); // lets the user know there is a problem with the gps
+            System.out.println("Erreur");
         }
         //Zoom sur Grand-Est
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.72234, 5.65267), 6));
 
     }
-
         
     public void findNearestCNAM(View v) {
         Thread nearest = new Thread(new Runnable() {
@@ -127,8 +141,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 JSONArray distances = getDistances(origins,destinations);
                 int indexMinimum = -1;
                 try {
-                    //int minValue = distances.getJSONObject(0).getJSONObject("distance").getInt("value");
-                    int minValue = 99999999;
+                    int minValue = distances.getJSONObject(0).getJSONObject("distance").getInt("value");
                     System.out.println(minValue);
                     for(int i= 0; i < distances.length();i++) {
                         if(distances.getJSONObject(i).getJSONObject("distance").getInt("value") < minValue){
@@ -139,48 +152,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
                 Handler mainHandler = new Handler(getApplicationContext().getMainLooper());
                 final int finalIndexMinimum = indexMinimum;
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            libelleCNAM.setText(etablissements.getJSONObject(finalIndexMinimum).getString("LIBELLE") + " - " + etablissements.getJSONObject(finalIndexMinimum).getString("TELEPHONE"));
-                            adresseCNAM.setText(etablissements.getJSONObject(finalIndexMinimum).getString("ADRESSE"));
-                            libelleCNAM.setVisibility(View.VISIBLE);
-                            adresseCNAM.setVisibility(View.VISIBLE);
+                            showCnamDetails(finalIndexMinimum);
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(etablissements.getJSONObject(finalIndexMinimum).getDouble("LATITUDE"), etablissements.getJSONObject(finalIndexMinimum).getDouble("LONGITUDE")), 12));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((Double) listDestinations.get(finalIndexMinimum)[1], (Double) listDestinations.get(finalIndexMinimum)[2]), 12));
-
                     }
                 });
             }
         });
         nearest.start();
     }
-
+    /**
+     * Méthode de l'appel HTTP de la requête des établissements. Retourne un tableau JSON des établiseements
+     * @return      JsonArray
+     */
     public JSONArray getEtablissements() {
         JSONArray results = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("https://apicnam.000webhostapp.com/API/Controllers/EtablissementController.php?view=all")
-                    .addHeader("content-type", "application/json")
-                    .addHeader("accept-Language", "fr")
-                    .addHeader("authorization", MainActivity.token)
-                    .build();
-            Response response = client.newCall(request).execute();
-            String responseBody = response.body().string();
-            //System.out.println("Response :  " + responseBody);
-            JSONObject jsonResponse = new JSONObject(responseBody);
-
-                results = jsonResponse.getJSONArray("etablissements");
+            JSONObject jsonResponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "https://apicnam.000webhostapp.com/API/Controllers/EtablissementController.php?view=all"
+            );
+            results = jsonResponse.getJSONArray("etablissements");
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
         } catch (IOException ioException) {
@@ -192,17 +192,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public JSONArray getDistances(String origins, String destinations) {
         JSONArray results = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+ origins +"&destinations="+ destinations +"&key=AIzaSyAN9k9wDxeBADhS0HyPvo4OHli7T7go1w4&mode=driving&language=en&units=metrics")
-                    .addHeader("content-type", "application/json")
-                    .addHeader("accept-Language", "fr")
-                    .addHeader("authorization", MainActivity.token)
-                    .build();
-            Response response = client.newCall(request).execute();
-            String responseBody = response.body().string();
-            JSONObject jsonResponse = new JSONObject(responseBody);
-
+            JSONObject jsonResponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+ origins +"&destinations="+ destinations +"&key=AIzaSyAN9k9wDxeBADhS0HyPvo4OHli7T7go1w4&mode=driving&language=en&units=metrics"
+            );
             results = jsonResponse.getJSONArray("rows").getJSONObject(0).getJSONArray("elements");
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
@@ -237,6 +230,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         startActivity(viewIntent);
     }
 
+    public void showCnamDetails(int position) throws JSONException {
+        libelleCNAM.setText(etablissements.getJSONObject(position).getString("LIBELLE") + " - " + etablissements.getJSONObject(position).getString("TELEPHONE"));
+        adresseCNAM.setText(etablissements.getJSONObject(position).getString("ADRESSE"));
+        libelleCNAM.setVisibility(View.VISIBLE);
+        adresseCNAM.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -244,5 +244,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Intent mainActivity = new Intent(MapActivity.this, MainActivity.class);
             startActivity(mainActivity);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        System.out.println(marker.getTag());
+        if(marker.getTag() != null) {
+            try {
+                showCnamDetails((Integer) marker.getTag());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

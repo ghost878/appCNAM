@@ -15,7 +15,7 @@
             android:id="@+id/headerFragment"
             android:name="com.example.enf_cnam.HeaderFragment"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="75dp" />
 
         <LinearLayout
             android:id="@+id/cursusLayout"
@@ -31,10 +31,10 @@
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="195dp"
+                    android:layout_width="450dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
                     android:text="CURSUS"
                     android:textColor="#C4042C"
                     android:textSize="20sp"

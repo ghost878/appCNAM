@@ -33,21 +33,13 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    // https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    //implementation 'org.json', name: 'json', version: '20201115'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    // https://mvnrepository.com/artifact/commons-net/commons-net
     implementation group: 'commons-net', name: 'commons-net', version: '3.7.2'
-    // https://mvnrepository.com/artifact/com.google.android.gms/play-services-base
     implementation group: 'com.google.android.gms', name: 'play-services-base', version: '17.5.0'
-
-    //implementation 'org.apache.commons:commons-configuration2:2.7'
-
-
 }

@@ -2,5 +2,48 @@
     <string name="app_name">ENF - CNAM</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello">Hello\u0020</string>
+    <string name="hello">Connected as:\u0020</string>
+    <string name="titleExamens">EXAMS</string>
+    <string name="titleProfile">MY PROFILE</string>
+    <string name="btnSaveProfile">Save</string>
+    <string name="NOM">NAME</string>
+    <string name="PRENOM">FIRST NAME</string>
+    <string name="DATE_NAISSANCE">DATE OF BIRTH</string>
+    <string name="CIVILITE">CIVILITY</string>
+    <string name="NATIONALITE">NATIONALITY</string>
+    <string name="SITUATION_FAMILLE">FAMILY SITUATION</string>
+    <string name="ENTREPRISE_NOM">COMPANY NAME</string>
+    <string name="INE">INE</string>
+    <string name="INE_CNAM">INE CNAM</string>
+    <string name="ADRESSE">ADRESS</string>
+    <string name="VILLE">CITY</string>
+    <string name="CODEPOSTAL">POSTAL CODE</string>
+    <string name="TELEPHONE_PORT">MOBILE NUMBER</string>
+    <string name="MEL_PERS">PERSONAL MAIL</string>
+    <string name="PASSWORD">PASSWORD</string>
+    <string name="MEL_PRO">CNAM MAIL</string>
+    <string name="cdposterror">Edit not possible - The postal code must not exceed 5 characters</string>
+    <string name="teleporterror">Edit not possible - The postal code must not exceed 5 characters</string>
+    <string name="melperserror">Edit not possible - The format of the professional email address is incorrect</string>
+    <string name="melproerror">Edit not possible- The format of the personal email address is incorrect</string>
+    <string name="titleMap">CNAM CENTERS</string>
+    <string name="btnFindCnam">FIND THE NEAREST CNAM</string>
+    <string name="changeViewWeek">THIS WEEK</string>
+    <string name="changeViewDay">TODAY</string>
+    <string name="libWeek">Week</string>
+    <string name="noEventsWeek">No events this week</string>
+    <string name="noEventsDay">No events this day</string>
+    <string name="to">\u0020to\u0020</string>
+    <string name="LUNDI">Monday</string>
+    <string name="MARDI">Tuesday</string>
+    <string name="MERCREDI">Wednesday</string>
+    <string name="JEUDI">Thursday</string>
+    <string name="VENDREDI">Friday</string>
+    <string name="sucessMessage">The changes have been made !</string>
+    <string name="locateError">Localization is incorrectly activated</string>
+    <string name="knownActivity">You are already on this interface!</string>
+    <string-array name="years">
+        <item>2019-2020</item>
+        <item>2020-2021</item>
+    </string-array>
 </resources>

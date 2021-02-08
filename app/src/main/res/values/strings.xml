@@ -2,5 +2,49 @@
     <string name="app_name">ENF - CNAM</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello">Bonjour\u0020</string>
+    <string name="hello">Connecté en tant que:\u0020</string>
+    <string name="titleExamens">EXAMENS</string>
+    <string name="titleProfile">MON PROFIL</string>
+    <string name="btnSaveProfile">Enregistrer</string>
+    <string name="NOM">NOM</string>
+    <string name="PRENOM">PRENOM</string>
+    <string name="DATE_NAISSANCE">DATE DE NAISSANCE</string>
+    <string name="CIVILITE">CIVILITE</string>
+    <string name="NATIONALITE">NATIONALITE</string>
+    <string name="SITUATION_FAMILLE">SITUATION_FAMILLE</string>
+    <string name="ENTREPRISE_NOM">NOM ENTREPRISE</string>
+    <string name="INE">INE</string>
+    <string name="INE_CNAM">INE CNAM</string>
+    <string name="ADRESSE">ADRESSE</string>
+    <string name="VILLE">VILLE</string>
+    <string name="CODEPOSTAL">CODE POSTAL</string>
+    <string name="TELEPHONE_PORT">TELEPHONE PORTABLE</string>
+    <string name="MEL_PERS">MAIL PERSONNEL</string>
+    <string name="PASSWORD">MOT DE PASSE</string>
+    <string name="MEL_PRO">MAIL CNAM</string>
+    <string name="cdposterror">Modification impossible - Le code postal ne doit pas excéder 10 caractères</string>
+    <string name="teleporterror">Modification impossible - Le numéro de téléphone ne doit pas excéder 10 caractères</string>
+    <string name="melperserror">Modification impossible - Le format de l\'adresse mail personnelle est incorrect</string>
+    <string name="melproerror">Modification impossible - Le format de l\'adresse mail professionnelle est incorrect</string>
+    <string name="titleMap">LES CENTRES CNAM</string>
+    <string name="btnFindCnam">TROUVEZ LE CENTRE CNAM LE PLUS PROCHE</string>
+    <string name="changeViewWeek">CETTE SEMAINE</string>
+    <string name="changeViewDay">AUJOURD\'HUI</string>
+    <string name="libWeek">Semaine</string>
+    <string name="noEventsWeek">Aucun cours cette semaine</string>
+    <string name="noEventsDay">Aucun cours cette jounrée</string>
+    <string name="to">\u0020à\u0020</string>
+    <string name="LUNDI">Lundi</string>
+    <string name="MARDI">Mardi</string>
+    <string name="MERCREDI">Mercredi</string>
+    <string name="JEUDI">Jeudi</string>
+    <string name="VENDREDI">Vendredi</string>
+    <string name="sucessMessage">Les modifications ont bien été effectués !</string>
+    <string name="locateError">La localisation est mal activé !</string>
+    <string name="knownActivity">Vous êtes déjà sur cette interface !</string>
+
+    <string-array name="years">
+        <item>2019-2020</item>
+        <item>2020-2021</item>
+    </string-array>
 </resources>

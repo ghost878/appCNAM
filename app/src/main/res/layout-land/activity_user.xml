@@ -16,7 +16,7 @@
             android:id="@+id/headerFragment"
             android:name="com.example.enf_cnam.HeaderFragment"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="75dp" />
 
         <LinearLayout
             android:id="@+id/infoLayout"
@@ -32,7 +32,7 @@
 
                 <TextView
                     android:id="@+id/textView6"
-                    android:layout_width="170dp"
+                    android:layout_width="352dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:gravity="center"

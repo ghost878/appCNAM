@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.View;
@@ -32,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -44,6 +47,8 @@ public class UserActivity extends AppCompatActivity {
     private LinearLayout infoLayout;
     private LinearLayout cadreInfo;
     private ArrayList<View> viewList;
+    private Spinner langue;
+    //public static String lang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +86,21 @@ public class UserActivity extends AppCompatActivity {
         ArrayList<String> spinnerList = new ArrayList<>();
         spinnerList.add("CIVILITE");
         spinnerList.add("NATIONALITE");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        //params.gravity = Gravity.CENTER;
         while(keys.hasNext()) {
             final String key = keys.next();
             if (!blackList.contains(key) && key.length() > 2) {
                 final LinearLayout ligne = new LinearLayout(getApplicationContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                params.gravity = Gravity.CENTER;
+                ligne.setPadding(30,10,30,10);
                 //params.height = 20;
                 ligne.setLayoutParams(params);
                 ligne.setOrientation(LinearLayout.HORIZONTAL);
+                String packageName = getPackageName();
+                int resId = getResources().getIdentifier(key, "string", packageName);
                 TextView libelle = new TextView(getApplicationContext());
-                libelle.setText(key + " : ");
+                libelle.setText(getString(resId) + " : ");
+                libelle.setWidth(400);
                 ligne.addView(libelle);
 
                 if (spinnerList.contains(key)) {
@@ -147,6 +156,34 @@ public class UserActivity extends AppCompatActivity {
             }
 
         }
+        final LinearLayout ligneLangue = new LinearLayout(getApplicationContext());
+        ligneLangue.setLayoutParams(params);
+        ligneLangue.setOrientation(LinearLayout.HORIZONTAL);
+        ligneLangue.setPadding(30,10,30,50);
+        TextView libelleLangue = new TextView(getApplicationContext());
+        libelleLangue.setWidth(400);
+        libelleLangue.setText("LANGUE" + " : ");
+            List<String> spinner = new ArrayList<String>();
+                    spinner.add("FR");
+                    spinner.add("EN");
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    this, android.R.layout.simple_spinner_item, spinner);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            langue = new Spinner(getApplicationContext());
+            langue.setAdapter(adapter);
+            System.out.println(Locale.getDefault().getLanguage());
+            langue.setSelection(adapter.getPosition(MainActivity.lang));
+            langue.setTag("LANGUE");
+            langue.setMinimumWidth(500);
+            langue.setGravity(Gravity.CENTER);
+        ligneLangue.addView(libelleLangue);
+        ligneLangue.addView(langue);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cadreInfo.addView(ligneLangue);
+            }
+        });
 
 
     }
@@ -195,16 +232,22 @@ public class UserActivity extends AppCompatActivity {
                     final JSONObject jsonResponse = new JSONObject(responseBody);
                     boolean editDone = jsonResponse.getBoolean("exist");
                     if(editDone == true) {
-                       listInfo(jsonResponse.getJSONObject("auditeur"));
+
+                      // listInfo(jsonResponse.getJSONObject("auditeur"));
+                        MainActivity.auditeurInfo = jsonResponse.getJSONObject("auditeur");
+                        Intent userActivity = new Intent(UserActivity.this, UserActivity.class);
+                        startActivity(userActivity);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Context context = getApplicationContext();
-                                CharSequence errorMessage = "Modifications bien effectuées !";
+                                CharSequence errorMessage = getString(R.string.sucessMessage);
                                 int duration = Toast.LENGTH_LONG;
                                 Toast toast = Toast.makeText(context, errorMessage, duration);
                                 toast.show();
                             }});
+                        switchLangue(langue.getSelectedItem().toString());
+
                     }
                     else {
                         System.out.println("TOAST");
@@ -214,7 +257,10 @@ public class UserActivity extends AppCompatActivity {
                                 Context context = getApplicationContext();
                                 CharSequence errorMessage = null;
                                 try {
-                                    errorMessage = jsonResponse.getString("error");
+                                    String packageName = getPackageName();
+                                    int resId = getResources().getIdentifier(jsonResponse.getString("error"), "string", packageName);
+                                    getString(resId);
+                                    errorMessage = getString(resId);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -231,6 +277,18 @@ public class UserActivity extends AppCompatActivity {
             }
         });
         edit.start();
+    }
+    public void switchLangue(String langue) {
+        System.out.println("lang" + langue);
+        MainActivity.lang = langue;
+//        String langue = Locale.getDefault().getLanguage();
+//        System.out.println("SWITCH" + langue);// your language
+        Locale locale = new Locale(langue);
+        Locale.setDefault(locale);
+        System.out.println("Country" + locale.getCountry());
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
     }
 
     public void viewHome(View v) {
@@ -251,6 +309,11 @@ public class UserActivity extends AppCompatActivity {
     }
 
     public void viewUserInfo(View v) {
+        Context context = getApplicationContext();
+        CharSequence errorMessage = getString(R.string.knownActivity);
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, errorMessage, duration);
+        toast.show();
     }
 
     @Override

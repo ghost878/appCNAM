@@ -2,7 +2,6 @@ package com.example.enf_cnam;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,24 +11,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class ExamenActivity extends AppCompatActivity {
 
@@ -45,7 +34,7 @@ public class ExamenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONArray examens = listExamens(MainActivity.formation.getInt("ID_FORMATION"));
+                    JSONArray examens = getExamens(MainActivity.formation.getInt("ID_FORMATION"));
                     if (examens != null) {
                         for(int i = 0; i < examens.length(); i++) {
                             final LinearLayout unExamen = new LinearLayout(getApplicationContext());
@@ -90,21 +79,13 @@ public class ExamenActivity extends AppCompatActivity {
      * @param idFormation Identifiant de la formation
      * @return JSONArray
      */
-    public JSONArray listExamens(int idFormation) {
+    public JSONArray getExamens(int idFormation) {
         JSONArray results = null;
         System.out.println(MainActivity.token);
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getExamens&id=" + idFormation)
-                    .addHeader("content-type", "application/json")
-                    .addHeader("accept-Language", "fr")
-                    .addHeader("authorization", MainActivity.token)
-                    .build();
-            Response reponse = client.newCall(request).execute();
-            String responseBody = reponse.body().string();
-            System.out.println(responseBody);
-            JSONObject jsonReponse = new JSONObject(responseBody);
+            JSONObject jsonReponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "http://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getExamens&id=" + idFormation            );
             if (jsonReponse.has("examens")) {
                 results = jsonReponse.getJSONArray("examens");
             }

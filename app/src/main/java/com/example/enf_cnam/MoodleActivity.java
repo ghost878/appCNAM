@@ -1,8 +1,5 @@
 package com.example.enf_cnam;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,15 +11,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Iterator;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MoodleActivity extends AppCompatActivity {
 
@@ -44,9 +40,6 @@ public class MoodleActivity extends AppCompatActivity {
         TextView moodleInfo3 = (TextView) findViewById(R.id.moodleInfo3);
         try {
             moodleInfo1.setText(HomeActivity.uniteClick.getString("CODE"));
-            moodleInfo1.setTextColor(Color.BLACK);
-            moodleInfo1.setTextSize(20);
-            moodleInfo1.setTypeface(Typeface.DEFAULT_BOLD);
             moodleInfo2.setText(HomeActivity.uniteClick.getString("LIBELLE"));
             moodleInfo2.setTextColor(Color.BLACK);
             moodleInfo2.setTextSize(15);
@@ -60,19 +53,11 @@ public class MoodleActivity extends AppCompatActivity {
 // APPROCHE PAR HTTP (plus securisé)
         Thread docs = new Thread(new Runnable() {
             public void run() {
-                OkHttpClient client = new OkHttpClient();
-                Request request = null;
                 try {
-                    request = new Request.Builder()
-                            .url("https://apicnam.000webhostapp.com/API/Controllers/AuditeurController.php?view=files_unite&unite=" + HomeActivity.uniteClick.getString("CODE") )
-                            .addHeader("content-type", "application/json")
-                            .addHeader("accept-Language", "fr")
-                            .addHeader("authorization", MainActivity.token)
-                            .build();
-                    Response response = client.newCall(request).execute();
-                    String responseBody = response.body().string();
-                    System.out.println("Response :  " + responseBody);
-                    JSONObject fichiersMoodle = new JSONObject(responseBody);
+                    JSONObject fichiersMoodle = HttpRequest.requestGet(
+                            MainActivity.token,
+                            "https://apicnam.000webhostapp.com/API/Controllers/AuditeurController.php?view=files_unite&unite=" + HomeActivity.uniteClick.getString("CODE")
+                    );
                     Iterator<String> keys = fichiersMoodle.keys();
                     while(keys.hasNext()) {
                         final String key = keys.next();
@@ -114,10 +99,9 @@ public class MoodleActivity extends AppCompatActivity {
                                     cadreFichiers.addView(filename);
                                 }
                             });
-
                         }
                     }
-                } catch (IOException | JSONException /*| JSONException*/ e) {
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
             }

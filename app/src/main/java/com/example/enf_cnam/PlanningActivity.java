@@ -1,8 +1,5 @@
 package com.example.enf_cnam;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,14 +30,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class PlanningActivity extends AppCompatActivity {
+    public static boolean semaineActive = false;
+    public static LocalDate date = LocalDate.now();
     private LinearLayout planingLayout;
     private LinearLayout planningJour;
     private LinearLayout planningSemaine;
@@ -46,9 +46,6 @@ public class PlanningActivity extends AppCompatActivity {
     private Button changeViewPlanning;
     private TextView libelleDay;
     private TextView libelleWeek;
-    public static boolean semaineActive = false;
-    public static LocalDate date = LocalDate.now();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,23 +92,13 @@ public class PlanningActivity extends AppCompatActivity {
     public JSONArray getPlanningJour(final String date) {
         JSONArray results = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getByDate&date=" + date + "&id=" + MainActivity.formation.getString("ID_FORMATION"))
-                    .addHeader("content-type", "application/json")
-                    .addHeader("accept-Language", "fr")
-                    .addHeader("authorization", MainActivity.token)
-//                    .method("POST", formBody)
-                    .build();
-            Response response = client.newCall(request).execute();
-            String responseBody = response.body().string();
-            System.out.println("Response :  " + responseBody);
-            JSONObject jsonResponse = new JSONObject(responseBody);
+            JSONObject jsonResponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=getByDate&date=" + date + "&id=" + MainActivity.formation.getString("ID_FORMATION")
+            );
             if(jsonResponse.has("events")) {
                 results = jsonResponse.getJSONArray("events");
             }
-
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -122,27 +109,20 @@ public class PlanningActivity extends AppCompatActivity {
     public JSONArray getPlanningSemaine(final String date) {
         JSONArray results = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=weekByDate&date=" + date + "&id=" + MainActivity.formation.getString("ID_CNAM"))
-                    .addHeader("content-type", "application/json")
-                    .addHeader("accept-Language", "fr")
-                    .addHeader("authorization", MainActivity.token)
-                    .build();
-            Response response = client.newCall(request).execute();
-            String responseBody = response.body().string();
-            System.out.println("Response :  " + responseBody);
-            if(!responseBody.contains("error")) {
-                results = new JSONArray(responseBody);
-            }
 
+            JSONObject jsonResponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "https://apicnam.000webhostapp.com/API/Controllers/PlanningController.php?view=weekByDate&date=" + date + "&id=" + MainActivity.formation.getString("ID_CNAM")
+            );
+
+            if(!jsonResponse.has("error")) {
+                results = jsonResponse.getJSONArray("events");
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return results;
     }
-
-
 
     public void listPlanningDay(final LocalDate date) throws JSONException {
         runOnUiThread(new Runnable() {
@@ -153,14 +133,23 @@ public class PlanningActivity extends AppCompatActivity {
         });
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         JSONArray cours = getPlanningJour(dtf.format(date));
-        //final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("EE, dd MMMM yyyy");
         ZoneId defaultZoneId = ZoneId.systemDefault();
         Date date1 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
-        final String timeStamp = new SimpleDateFormat("EEEE d MMMM", Locale.FRANCE).format(date1);
+        String timeStamp ="";
+        switch(MainActivity.lang) {
+            case "FR" :
+                timeStamp = new SimpleDateFormat("EEEE d MMMM", Locale.FRANCE).format(date1);
+                break;
+            case "EN" :
+                timeStamp = new SimpleDateFormat("EEEE, d MMMM").format(date1);
+                break;
+        }
+
+        final String finalTimeStamp = timeStamp;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                libelleDay.setText(timeStamp);
+                libelleDay.setText(finalTimeStamp);
                 libelleDay.setGravity(Gravity.CENTER);
                 libelleDay.setTextColor(Color.BLACK);
                 libelleDay.setTypeface(Typeface.DEFAULT_BOLD);
@@ -172,7 +161,7 @@ public class PlanningActivity extends AppCompatActivity {
                 final LinearLayout unCours = new LinearLayout(getApplicationContext());
                 unCours.setOrientation(LinearLayout.VERTICAL);
                 TextView horaires = new TextView(getApplicationContext());
-                horaires.setText(detailCours.getString("HEURE_DEB") + " à " + detailCours.getString("HEURE_FIN"));
+                horaires.setText(detailCours.getString("HEURE_DEB") + getString(R.string.to) + detailCours.getString("HEURE_FIN"));
                 TextView libelle = new TextView(getApplicationContext());
                 libelle.setText(detailCours.getString("CODE") + " : " + detailCours.getString("LIBELLE"));
                 TextView profEtSalle = new TextView(getApplicationContext());
@@ -203,7 +192,7 @@ public class PlanningActivity extends AppCompatActivity {
             }
         } else {
             final TextView info = new TextView(getApplicationContext());
-            info.setText("Aucun cours cette journée");
+            info.setText(getString(R.string.noEventsDay));
             info.setTypeface(Typeface.DEFAULT_BOLD);
             info.setGravity(Gravity.CENTER);
             info.setPadding(0,100,0,0);
@@ -225,17 +214,15 @@ public class PlanningActivity extends AppCompatActivity {
         });
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         JSONArray cours = getPlanningSemaine(dtf.format(date));
-        System.out.println(cours);
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date date1 = df.parse(dtf.format(date));
-        //Date date1 = df.parse("01/01/2021");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date1);
         final int week = cal.get(Calendar.WEEK_OF_YEAR)-1;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                libelleWeek.setText("Semaine " + week);
+                libelleWeek.setText( getString(R.string.libWeek) + " " + week);
                 libelleWeek.setGravity(Gravity.CENTER);
                 libelleWeek.setTextColor(Color.BLACK);
                 libelleWeek.setTypeface(Typeface.DEFAULT_BOLD);
@@ -245,12 +232,13 @@ public class PlanningActivity extends AppCompatActivity {
         if(cours != null) {
             for (int i = 0; i < cours.length(); i++) {
                 JSONObject detailCours = cours.getJSONObject(i);
-                System.out.println(detailCours.getString("unite"));
                 final LinearLayout unCours = new LinearLayout(getApplicationContext());
                 unCours.setOrientation(LinearLayout.VERTICAL);
                 if(!joursSemaine.contains(detailCours.getString("dayOfWeek"))){
                             final TextView jour = new TextView(getApplicationContext());
-                            jour.setText(detailCours.getString("dayOfWeek"));
+                            String packageName = getPackageName();
+                            int resId = getResources().getIdentifier(detailCours.getString("dayOfWeek"), "string", packageName);
+                            jour.setText(getString(resId));
                             jour.setGravity(Gravity.CENTER);
                             jour.setPadding(0,20,0, 20);
                             jour.setTextColor(Color.rgb(196,4,44));
@@ -290,7 +278,7 @@ public class PlanningActivity extends AppCompatActivity {
             }
         } else {
             final TextView info = new TextView(getApplicationContext());
-            info.setText("Aucun cours cette semaine");
+            info.setText(getString(R.string.noEventsWeek));
             info.setTypeface(Typeface.DEFAULT_BOLD);
             info.setGravity(Gravity.CENTER);
             info.setPadding(0,100,0,0);
@@ -303,15 +291,11 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void nextDayPlanning(View v) {
         date = LocalDate.parse(date.toString()).plusDays(1);
         Thread nextDay = new Thread(new Runnable() {
             public void run() {
-                //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 try {
-                    // System.out.println(dtf.format(date));
                     listPlanningDay(date);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -339,9 +323,7 @@ public class PlanningActivity extends AppCompatActivity {
         date = LocalDate.parse(date.toString()).plusDays(7);
         Thread nextDay = new Thread(new Runnable() {
             public void run() {
-                //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 try {
-                    // System.out.println(dtf.format(date));
                     listPlanningWeek(date);
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
@@ -355,9 +337,7 @@ public class PlanningActivity extends AppCompatActivity {
         date = LocalDate.parse(date.toString()).minusDays(7);
         Thread nextDay = new Thread(new Runnable() {
             public void run() {
-                //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 try {
-                    // System.out.println(dtf.format(date));
                     listPlanningWeek(date);
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
@@ -367,30 +347,26 @@ public class PlanningActivity extends AppCompatActivity {
         nextDay.start();
     }
 
-
-
-
     public void changeView(View v) {
 
         if(semaineActive == false) {
             semaineActive = true;
             planningSemaine.setVisibility(View.VISIBLE);
             planningJour.setVisibility(View.GONE);
-            changeViewPlanning.setText("Aujourdhui");
+            changeViewPlanning.setText(getString(R.string.changeViewDay));
         } else {
             semaineActive = false;
             planningJour.setVisibility(View.VISIBLE);
             planningSemaine.setVisibility(View.GONE);
-            changeViewPlanning.setText("Cette semaine");
+            changeViewPlanning.setText(getString(R.string.changeViewWeek));
         }
-
     }
 
     public void viewHome(View v) {
         Intent homeActivity = new Intent(PlanningActivity.this, HomeActivity.class);
         startActivity(homeActivity);
     }
-    public void viewUserInfo(View v) throws JSONException {
+    public void viewUserInfo(View v) {
         Intent userActivity = new Intent(PlanningActivity.this, UserActivity.class);
         startActivity(userActivity);
     }

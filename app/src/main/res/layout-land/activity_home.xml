@@ -17,7 +17,7 @@
             android:id="@+id/headerFragment"
             android:name="com.example.enf_cnam.HeaderFragment"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="75dp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -32,6 +32,7 @@
                     android:id="@+id/homeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="569dp"
+
                     android:orientation="vertical">
 
                     <TextView

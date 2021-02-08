@@ -1,16 +1,11 @@
 package com.example.enf_cnam;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,20 +59,5 @@ public class HeaderFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_header, container, false);
-    }
-
-    public void logout(View v) {
-        Intent mainActivity = new Intent(getContext(), MainActivity.class);
-        startActivity(mainActivity);
-    }
-
-    public void mail(View v) {
-        Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse("https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1610371321&rver=7.0.6737.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26RpsCsrfState%3db3d1dea9-4053-5262-434d-0b14a393acbf&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=90015"));
-        viewIntent.setPackage("com.android.chrome");
-        startActivity(viewIntent);
-    }
-
-    public void viewUserInfo(View v) throws JSONException {
-
     }
 }

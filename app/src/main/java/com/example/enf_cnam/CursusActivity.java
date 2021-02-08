@@ -1,52 +1,60 @@
 package com.example.enf_cnam;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-
-import org.json.JSONException;
+import java.util.Calendar;
 
 public class CursusActivity extends AppCompatActivity {
 
+    public static int year = Calendar.getInstance().get(Calendar.YEAR)-1;
     private LinearLayout cursusLayout;
-    private LinearLayout titreLayout;
     private LinearLayout contenuLayout;
+    private LinearLayout titleLayout;
+    private Spinner selectYear;
 
-
-
+    /**
+     * Fonction d'appel de l'activité cursus
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cursus);
 
         cursusLayout = (LinearLayout) findViewById(R.id.cursusLayout);
-        titreLayout = (LinearLayout) findViewById(R.id.titreLayout);
         contenuLayout = (LinearLayout) findViewById(R.id.contenuLayout);
+        titleLayout = (LinearLayout) findViewById(R.id.titleLayout);
+        selectYear = (Spinner) findViewById(R.id.selectYear);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Thread cursus = new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void run() {
                 try {
-                    listCursus();
+                    listCursus(year);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -54,57 +62,70 @@ public class CursusActivity extends AppCompatActivity {
         });
         cursus.start();
 
-
-        TextView titre = new TextView(getApplicationContext());
-        titre.setText("Relevé de notes");
-        titreLayout.addView(titre);
-
     }
 
-
-    public JSONArray getCursus() {
+    /** Méthode de la requête HTTP qui récupère les notes d'un auditeur pour une année donnée
+     * @param year
+     * @return
+     */
+    public JSONArray getCursus(int year) {
         JSONArray results = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://apicnam.000webhostapp.com/API/Controllers/NoteController.php?view=getByYearAndAuditeur&year=2020&id=" + MainActivity.auditeurInfo.getString("ID_AUDITEUR"))
-                    .build();
-            Response response = client.newCall(request).execute();
-            String responseBody = response.body().string();
-            //System.out.println("Response :  " + responseBody);
-            JSONObject jsonResponse = new JSONObject(responseBody);
+            JSONObject jsonResponse = HttpRequest.requestGet(
+                    MainActivity.token,
+                    "http://apicnam.000webhostapp.com/API/Controllers/NoteController.php?view=getByYearAndAuditeur&year="+ year +"&id=" + MainActivity.auditeurInfo.getString("ID_AUDITEUR")
+            );
             if(jsonResponse.has("notes")) {
                 results = jsonResponse.getJSONArray("notes");
             }
-
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return results;
     }
 
+    /**
+     * Méthode remplissant le contenuLayout des informations récupéré getCursus()
+     * @param year
+     * @throws JSONException
+     */
+    public void listCursus(int year) throws JSONException {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                contenuLayout.removeAllViews();
+            }
+        });
 
-    public void listCursus() throws JSONException {
+        String yearScol = year + "-" + (year+1) ;
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.years, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        selectYear.setAdapter(adapter);
+        selectYear.setSelection(adapter.getPosition(yearScol));
 
-        JSONArray cursus = getCursus();
-        System.out.println(cursus);
+
+        JSONArray cursus = getCursus(year);
         if(cursus != null) {
             for(int i=0; i<cursus.length(); i++) {
-                System.out.println("for");
                 JSONObject detailCursus = cursus.getJSONObject(i);
                 final LinearLayout unCursus = new LinearLayout(getApplicationContext());
-                unCursus.setOrientation(LinearLayout.VERTICAL);
+                unCursus.setOrientation(LinearLayout.HORIZONTAL);
                 TextView ue = new TextView(getApplicationContext());
-                ue.setText(detailCursus.getString("CODE") + " - " + detailCursus.getString("LIBELLE") + " (" + detailCursus.getString("ECTS") + ")");
-                TextView annee = new TextView(getApplicationContext());
-                annee.setText(detailCursus.getString("ANNEE_DEBUT") + " / " + detailCursus.getString("ANNEE_FIN"));
+                ue.setText(detailCursus.getString("CODE") + " - " + detailCursus.getString("LIBELLE") + " (" + detailCursus.getString("ECTS") + ")" + "\n" + detailCursus.getString("ANNEE_DEBUT") + " / " + detailCursus.getString("ANNEE_FIN"));
                 TextView note = new TextView(getApplicationContext());
-                note.setText(detailCursus.getString("NOTE"));
+                note.setText(detailCursus.getString("NOTE") + " / 20");
+                ue.setWidth(800);
+                ue.setHeight(200);
+                note.setGravity(Gravity.CENTER);
+                ue.setTextColor(Color.BLACK);
+                note.setTextColor(Color.BLACK);
+                note.setTypeface(Typeface.DEFAULT_BOLD);
+                note.setBackgroundResource(R.drawable.cadre_note);
 
                 unCursus.addView(ue);
-                unCursus.addView(annee);
                 unCursus.addView(note);
-                unCursus.setPadding(10,20,10,20);
+                unCursus.setPadding(40,20,40,30);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -112,26 +133,27 @@ public class CursusActivity extends AppCompatActivity {
                     }
                 });
             }
-
-
-
         }
-
-
-
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    public void changeYear(View v) {
+        int year;
+        switch (selectYear.getSelectedItem().toString()) {
+            case "2020-2021" :
+                year = 2020;
+                break;
+            case "2019-2020" :
+                year = 2019;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + selectYear.getSelectedItem().toString());
+        }
+        try {
+            listCursus(year);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void viewHome(View v) {
